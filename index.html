@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Camelia Store - Top Up (Final)</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#120018; --card:#230031; --muted:#cdb9e6;
+  --accent:#7c5cff; --accent-2:#ff5df0; --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linear-gradient(180deg,var(--bg),#2a003f 60%);color:#fff;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+/* Header */
+.header{
+  position:sticky;top:0;z-index:120;padding:10px 14px;display:flex;align-items:center;gap:12px;
+  background:linear-gradient(180deg,rgba(0,0,0,0.22),rgba(0,0,0,0.06));
+  border-bottom:1px solid rgba(255,255,255,0.03)
+}
+.menu-btn{background:transparent;border:none;color:#fff;font-size:24px;padding:8px;cursor:pointer}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.brand .gem{font-size:20px;color:var(--accent-2)}
+.header-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.search{padding:8px 10px;border-radius:12px;border:none;background:rgba(255,255,255,0.03);color:var(--muted);width:160px}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
+.btn-primary{background:linear-gradient(90deg,var(--accent-2),#b86ef2);border:none;padding:10px 14px;border-radius:12px;color:#2a002b;cursor:pointer;box-shadow:0 8px 24px rgba(124,92,255,0.12)}
+.btn-primary:active{transform:translateY(1px)}
+
+/* Layout */
+.container{max-width:1100px;margin:18px auto;padding:0 16px}
+.hero{padding:22px 0}
+.hero h1{margin:0;font-size:28px;color:var(--accent-2)}
+.hero p{color:var(--muted);margin:10px 0 16px;line-height:1.55}
+.hero-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.promo-pill{background:linear-gradient(90deg,#8453ff,#d67bff);padding:10px 14px;border-radius:14px;font-weight:600;color:#fff}
+
+/* Banner slider */
+.banner-wrap{margin:10px 0 18px;position:relative;overflow:hidden;border-radius:14px}
+.banner-track{display:flex;transition:transform .5s ease}
+.banner-item{min-width:100%;height:140px;background:#2a0036;display:flex;align-items:center;justify-content:center;position:relative}
+.banner-item img{width:100%;height:100%;object-fit:cover;display:block;border-radius:14px}
+.banner-dots{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.35);cursor:pointer}
+.dot.active{background:var(--accent-2);box-shadow:0 6px 18px rgba(0,0,0,0.5)}
+
+/* Game grid */
+.section-title{color:var(--accent);margin:12px 0 10px;font-size:18px}
+.game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;padding-bottom:40px}
+.card-game{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:16px 12px;text-align:center;cursor:pointer;border:1px solid rgba(255,255,255,0.03);transition:transform .14s;box-shadow:0 8px 30px rgba(0,0,0,0.25) inset}
+.card-game:focus{outline:3px solid rgba(124,92,255,0.12)}
+.card-game:hover{transform:translateY(-6px)}
+.card-game img{width:72px;height:72px;border-radius:12px;object-fit:cover;margin:8px auto}
+.gname{font-weight:700;margin-top:6px}
+
+/* Sidebar & overlay */
+.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:300;display:none;transition:opacity .22s}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:linear-gradient(180deg,#1b0128,#2b003f);padding:18px;transform:translateX(-320px);transition:transform .28s ease;z-index:320;border-right:1px solid rgba(255,255,255,0.02)}
+.sidebar.open{transform:translateX(0)}
+.sidebar .close-btn{display:flex;justify-content:flex-end}
+.sidebar .close-btn button{background:none;border:none;color:#fff;font-size:22px;cursor:pointer}
+.sidebar nav{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.sidebar a{color:#fff;text-decoration:none;padding:12px;border-radius:8px;background:rgba(255,255,255,0.02)}
+
+/* Top-up modal full page */
+.topup-page{position:fixed;inset:0;z-index:350;display:none;align-items:flex-start;justify-content:center;padding:18px;overflow:auto;background:rgba(0,0,0,0.55)}
+.topup-page.show{display:flex}
+.topup-inner{width:100%;max-width:640px;background:linear-gradient(180deg,#1a0420,#240531);border-radius:16px;padding:14px;box-shadow:0 40px 120px rgba(0,0,0,0.7)}
+.topup-head{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.topup-title{font-weight:700}
+.topup-body{margin-top:8px}
+.progress{position:relative;padding:16px 6px}
+.progress-line{height:6px;background:#3a003f;border-radius:6px;opacity:0.5}
+.progress-steps{position:absolute;top:6px;left:12px;right:12px;display:flex;justify-content:space-between}
+.pstep{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#3a003f;color:#cbb5ff;font-weight:700}
+.pstep.active{background:linear-gradient(90deg,var(--accent-2),#ffb3ff);color:#2a002b;box-shadow:0 8px 30px rgba(255,93,240,0.12)}
+.card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:16px;border-radius:12px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.03)}
+.tp-step{display:none}
+.tp-step.active{display:block}
+.input, select{width:100%;padding:12px;border-radius:12px;border:2px solid rgba(255,255,255,0.03);background:rgba(0,0,0,0.12);color:#fff;outline:none}
+.row{display:flex;gap:10px;margin-top:12px;align-items:center}
+
+/* price & pay grids */
+.price-grid,.pay-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+.price-item{background:#2a0036;border-radius:12px;padding:12px;cursor:pointer;border:1px solid rgba(255,255,255,0.03);transition:all .16s}
+.price-item .label{font-weight:700}
+.price-item .muted{color:var(--muted);font-size:13px}
+.price-item:hover{transform:translateY(-4px)}
+.price-item.active{background:#fff;color:#150018;box-shadow:0 10px 30px rgba(0,0,0,0.45)}
+.pay-item{display:flex;align-items:center;gap:10px;background:#2a0036;border-radius:12px;padding:10px;cursor:pointer;border:1px solid rgba(255,255,255,0.03);transition:all .16s}
+.pay-item img{height:36px;width:auto}
+.pay-item .pname{font-weight:600}
+.pay-item:hover{transform:translateY(-4px)}
+.pay-item.active{background:#fff;color:#150018;box-shadow:0 10px 30px rgba(0,0,0,0.45)}
+
+.small{font-size:13px;color:var(--muted)}
+
+/* footer */
+footer{background:#100022;padding:36px 18px;margin-top:30px}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+footer h3{color:var(--accent-2);margin-bottom:8px}
+.pay-logos{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.pay-logos img{width:48px;border-radius:6px;background:#fff;padding:4px}
+.contact a{color:#8f73ff;display:block;margin-top:6px}
+.bottom{text-align:center;margin-top:20px;color:#a599cc}
+
+/* history panel */
+.panel-card{box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+
+/* utility */
+.hide{display:none}
+.no-scroll{overflow:hidden}
+
+/* responsive */
+@media (max-width:600px){
+  .search{width:120px}
+  .price-grid,.pay-grid{grid-template-columns:repeat(1,1fr)}
+  .card-game img{width:60px;height:60px}
+  .banner-item{height:120px}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <button id="menuBtn" class="menu-btn" aria-label="Buka menu">☰</button>
+  <div class="brand"><span class="gem">💎</span> Camelia Store</div>
+
+  <div class="header-right" style="margin-left:auto">
+    <input id="searchInput" class="search" placeholder="Cari game (Roblox, FF...)" />
+    <button id="historyBtn" class="btn-ghost">Riwayat</button>
+  </div>
+</header>
+
+<!-- sidebar & overlay -->
+<div id="overlay" class="sidebar-overlay" aria-hidden="true"></div>
+<aside id="sidebar" class="sidebar" aria-hidden="true" role="menu">
+  <div class="close-btn"><button id="closeSidebar" aria-label="Tutup menu">✕</button></div>
+  <nav>
+    <a href="#home" data-target="home" class="side-link">Beranda</a>
+    <a href="#promo" data-target="promo" class="side-link">Promo</a>
+    <a href="#panduan" data-target="panduan" class="side-link">Panduan</a>
+    <a href="#kontak" data-target="kontak" class="side-link">Kontak</a>
+    <a href="#tentang" data-target="tentang" class="side-link">Tentang</a>
+  </nav>
+</aside>
+
+<main class="container" id="mainContent">
+  <!-- HERO -->
+  <section id="home" class="hero" tabindex="-1">
+    <h1>Camelia Store</h1>
+    <p>Platform top-up cepat & aman untuk semua kalangan — dari pemain muda sampai dewasa. Harga bersahabat, proses instan max 1x24 jam, dan dukungan CS siap membantu.</p>
+    <div class="hero-actions">
+      <button id="allGamesBtn" class="btn-primary">Lihat Semua Game</button>
+      <button id="promoBtn" class="promo-pill">PROMO: Diskon all 5% S&K berlaku</button>
+    </div>
+
+    <!-- Banner slider (kosongan gambar, gampang diganti) -->
+    <div class="banner-wrap" aria-hidden="false">
+      <div id="bannerTrack" class="banner-track">
+        <div class="banner-item"><img src="https://i.postimg.cc/0NmnVngs/banner.jpg" alt="Promo 1"></div>
+        <div class="banner-item"><img src="https://via.placeholder.com/1200x300/8236b3/ffffff?text=Promo+2+Diskon+5%25" alt="Promo 2"></div>
+        <div class="banner-item"><img src="https://via.placeholder.com/1200x300/6e2a89/ffffff?text=Promo+3+FC+Mobile" alt="Promo 3"></div>
+      </div>
+      <div id="bannerDots" class="banner-dots" aria-hidden="false"></div>
+    </div>
+  </section>
+
+  <!-- GAMES -->
+  <section id="games" class="game-section">
+    <h3 class="section-title">Game Populer</h3>
+    <div id="gameList" class="game-grid" aria-live="polite"></div>
+  </section>
+
+  <!-- PROMO SECTION -->
+  <section id="promo" style="padding:18px 0">
+    <h3 style="color:var(--accent-2)">Promo Terbaru</h3>
+    <p class="small" style="max-width:780px">Ikuti channel PB Store dan ajak teman untuk mendapatkan promo 5% cashback pada pembelian pertama yang memenuhi syarat.</p>
+  </section>
+
+  <!-- PANDUAN -->
+  <section id="panduan" style="padding:18px 0">
+    <h3 style="color:var(--accent-2)">Panduan Singkat</h3>
+    <ol class="small" style="max-width:780px; color:var(--muted); margin-top:8px; line-height:1.6">
+      <li>Pilih game → Masukkan Player ID → Pilih nominal → Bayar.</li>
+      <li>Pastikan Player ID benar — kami sediakan garansi jika terjadi kesalahan.</li>
+      <li>Jika butuh bantuan, hubungi CS melalui email atau WhatsApp.</li>
+    </ol>
+  </section>
+</main>
+
+<!-- topup modal (step flow) -->
+<div id="topupPage" class="topup-page" aria-hidden="true">
+  <div class="topup-inner" role="dialog" aria-modal="true" aria-labelledby="topupTitle">
+    <div class="topup-head">
+      <button id="closeTopup" class="btn-ghost" aria-label="Kembali">←</button>
+      <div id="topupTitle" class="topup-title">Top Up</div>
+      <div style="width:36px"></div>
+    </div>
+
+    <div class="topup-body">
+      <div class="progress">
+        <div class="progress-line"></div>
+        <div class="progress-steps">
+          <div class="pstep active" data-step="1">1</div>
+          <div class="pstep" data-step="2">2</div>
+          <div class="pstep" data-step="3">3</div>
+        </div>
+      </div>
+
+      <!-- Step 1 -->
+      <div id="tp-step-1" class="tp-step active">
+        <div class="card">
+          <h3>1️⃣ Masukkan Player ID</h3>
+          <input id="playerInput" class="input" placeholder="Masukkan ID / Username" autocomplete="off">
+          <div class="row"><button id="toStep2" class="btn-primary full">Lanjut ke Nominal</button></div>
+        </div>
+      </div>
+
+      <!-- Step 2 (DROPDOWN nominal) -->
+      <div id="tp-step-2" class="tp-step">
+        <div class="card">
+          <h3>2️⃣ Pilih Nominal</h3>
+          <label for="nominalSelect" class="small" style="color:var(--muted)">Pilih paket/top-up</label>
+          <select id="nominalSelect" class="input" aria-label="Pilih nominal">
+            <option value="">-- Pilih nominal --</option>
+          </select>
+          <div class="row"><button id="toStep3" class="btn-primary full" disabled>Lanjut ke Pembayaran</button></div>
+        </div>
+      </div>
+
+      <!-- Step 3 (metode pembayaran) -->
+      <div id="tp-step-3" class="tp-step">
+        <div class="card">
+          <h3>3️⃣ Pilih Pembayaran</h3>
+          <div id="payGrid" class="pay-grid"></div>
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+            <button id="buyBtn" class="btn-primary full" disabled>Beli Sekarang (WA)</button>
+            <button id="cancelTopup" class="btn-ghost full">Batal</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="orderMsg" class="small" aria-live="polite"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT / FOOTER -->
+<footer id="kontak" style="scroll-margin-top:90px">
+  <div class="footer-grid" style="max-width:1100px;margin:0 auto;padding:30px 18px">
+    <div>
+      <h3 id="tentang">Tentang Camelia Store</h3>
+      <p class="small">Camelia Store hadir untuk semua gamer — cepat, aman, dan mudah. Top-up tanpa ribet, dukungan CS responsif, dan garansi bila terjadi kesalahan.</p>
+    </div>
+
+    <div>
+      <h3>Keunggulan</h3>
+      <ul class="small" style="color:var(--muted);line-height:1.6">
+        <li>🔒 Garansi 30% uang kembali jika ID salah (pastikan kembali sebelum bayar)</li>
+        <li>🔁 Garansi uang kembali jika ada kesalahan sistem</li>
+        <li>⚡ Proses instan max 1x24 jam</li>
+        <li>💬 CS aktif 24 jam</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3>Metode Pembayaran</h3>
+      <div class="pay-logos">
+        <img src="https://i.postimg.cc/xdy65qQK/images-7.jpg" alt="Dana">
+        <img src="https://i.postimg.cc/7PpQqFKG/images-10.jpg" alt="OVO">
+        <img src="https://i.postimg.cc/DfYBBt9x/images-8.jpg" alt="GoPay">
+        <img src="https://i.postimg.cc/3w7Bk7Gm/images-9.jpg" alt="QRIS">
+      </div>
+    </div>
+
+    <div class="contact">
+      <h3>Kontak & Bantuan</h3>
+      <p class="small">Email: <a href="mailto:biasa0048@gmail.com" id="mailLink">biasa0048@gmail.com</a></p>
+      <p class="small">WhatsApp CS: <a href="https://wa.me/6288294179052" id="waLink" target="_blank" rel="noopener">+62 882-9417-9052</a></p>
+      <p class="small" style="margin-top:8px">Follow channel PB Store untuk promo & referral 5%.</p>
+    </div>
+  </div>
+  <div class="bottom">© 2025 Camelia Store • All rights reserved</div>
+</footer>
+
+<!-- HISTORY PANEL -->
+<div id="historyPanel" class="sidebar-overlay hide" style="align-items:flex-end">
+  <div class="panel-card" style="width:100%;max-width:720px;background:linear-gradient(180deg,#0f0b1a,#171029);border-radius:12px;padding:14px;margin:12px">
+    <button id="closeHistory" class="close-btn" style="float:right;background:none;border:none;color:#fff;font-size:20px">✕</button>
+    <h3>Riwayat Top-up</h3>
+    <div id="historyList" class="small" style="margin-top:8px;color:var(--muted)"></div>
+    <div style="margin-top:12px"><button id="clearHistory" class="btn-ghost">Hapus Riwayat</button></div>
+  </div>
+</div>
+
+<script>
+/* ===== Data & util ===== */
+const GAMES = [
+  {id:"roblox",name:"Roblox",img:"https://i.postimg.cc/8cgx5xTw/images.jpg",prices:[{code:"R-80",label:"80 Robux",price:10000},{code:"R-400",label:"400 Robux",price:50000},{code:"R-800",label:"800 Robux",price:100000}]},
+  {id:"ff",name:"Free Fire",img:"https://i.postimg.cc/4NNB5X2P/images-1.jpg",prices:[{code:"FF-50",label:"50 Diamonds",price:10000},{code:"FF-140",label:"140 Diamonds",price:20000},{code:"FF-370",label:"370 Diamonds",price:50000}]},
+  {id:"pubg",name:"PUBG Mobile",img:"https://i.postimg.cc/tCZVyfs0/images-2.jpg",prices:[{code:"P-60",label:"60 UC",price:10000},{code:"P-300",label:"300 UC",price:50000},{code:"P-600",label:"600 UC",price:100000}]},
+  {id:"undawn",name:"Undawn",img:"https://i.postimg.cc/RVHq2HYV/images-3.jpg",prices:[{code:"U-100",label:"100 Gold",price:10000},{code:"U-500",label:"500 Gold",price:50000},{code:"U-1000",label:"1000 Gold",price:100000}]},
+  {id:"ml",name:"Mobile Legends",img:"https://i.postimg.cc/hhW4K2YK/images-4.jpg",prices:[{code:"ML-86",label:"86 Diamond",price:10000},{code:"ML-170",label:"170 Diamond",price:20000},{code:"ML-515",label:"515 Diamond",price:50000}]},
+  {id:"genshin",name:"Genshin Impact",img:"https://i.postimg.cc/KvD4Z2mw/images-5.jpg",prices:[{code:"G-60",label:"60 Genesis",price:10000},{code:"G-300",label:"300 Genesis",price:50000},{code:"G-648",label:"648 Genesis",price:100000}]},
+  {id:"zepeto",name:"Zepeto",img:"https://i.postimg.cc/sXCRQMcg/images-6.jpg",prices:[{code:"Z-100",label:"100 Coins",price:10000},{code:"Z-500",label:"500 Coins",price:50000},{code:"Z-1000",label:"1000 Coins",price:100000}]}
+];
+
+const PAYMENTS = [
+  {id:"gopay",name:"GoPay",logo:"https://upload.wikimedia.org/wikipedia/commons/2/29/GoPay_logo.svg"},
+  {id:"dana",name:"Dana",logo:"https://upload.wikimedia.org/wikipedia/commons/9/99/Dana_Logo.svg"},
+  {id:"qris",name:"QRIS",logo:"https://upload.wikimedia.org/wikipedia/commons/4/49/QRIS_logo.svg"},
+  {id:"shopee",name:"ShopeePay",logo:"https://upload.wikimedia.org/wikipedia/commons/f/fa/Shopee_logo.svg"},
+  {id:"ovo",name:"OVO",logo:"https://upload.wikimedia.org/wikipedia/commons/6/6b/OVO_logo.svg"},
+  {id:"indomaret",name:"Indomaret",logo:"https://upload.wikimedia.org/wikipedia/commons/8/89/Indomaret_logo.svg"},
+  {id:"alfamart",name:"Alfamart",logo:"https://upload.wikimedia.org/wikipedia/commons/2/20/Alfamart_logo.svg"},
+  {id:"linkaja",name:"LinkAja",logo:"https://upload.wikimedia.org/wikipedia/commons/b/b2/LinkAja_logo.svg"}
+];
+
+const CS_PHONE = "6288294179052"; // WA CS
+const HISTORY_KEY = "camelia_topup_history_v4";
+
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const formatRp = n => n.toLocaleString('id');
+
+/* ===== Banner slider implementation ===== */
+let bannerIdx = 0;
+let bannerTimer = null;
+function setupBanner(){
+  const track = document.getElementById("bannerTrack");
+  const dotsWrap = document.getElementById("bannerDots");
+  const slides = track.children.length;
+  dotsWrap.innerHTML = "";
+  for(let i=0;i<slides;i++){
+    const d = document.createElement("div");
+    d.className = "dot" + (i===0 ? " active" : "");
+    d.dataset.index = i;
+    d.addEventListener("click", ()=> { goBanner(i); resetBannerInterval(); });
+    dotsWrap.appendChild(d);
+  }
+  goBanner(0);
+  resetBannerInterval();
+}
+function goBanner(i){
+  const track = document.getElementById("bannerTrack");
+  const slides = track.children.length;
+  bannerIdx = ((i % slides) + slides) % slides;
+  track.style.transform = `translateX(-${bannerIdx*100}%)`;
+  $$(".dot").forEach(d => d.classList.toggle("active", Number(d.dataset.index)===bannerIdx));
+}
+function resetBannerInterval(){
+  clearInterval(bannerTimer);
+  bannerTimer = setInterval(()=> goBanner(bannerIdx+1), 3000);
+}
+
+/* ===== Render games & events ===== */
+let currentGame = null;
+let chosenPrice = null;
+let chosenPayment = null;
+
+function renderGames(list = GAMES){
+  const root = $("#gameList");
+  root.innerHTML = list.map(g=>`
+    <div class="card-game" data-id="${g.id}" role="button" tabindex="0">
+      <img src="${g.img}" alt="${g.name}" onerror="this.style.opacity=.25" />
+      <div class="gname">${g.name}</div>
+      <div class="small" style="color:var(--muted)">Top-up cepat & aman</div>
+      <div style="margin-top:12px"><button class="btn-primary buy-inline" data-id="${g.id}">Beli</button></div>
+    </div>`).join('');
+  // attach
+  $$(".card-game").forEach(card=>{
+    card.addEventListener("click", (e)=> {
+      // if click on internal 'Beli' handled separately, else open topup
+      if(e.target && e.target.classList.contains('buy-inline')) return;
+      openTopup(card.dataset.id);
+    });
+    card.addEventListener("keydown", (e)=> { if(e.key === "Enter") openTopup(card.dataset.id); });
+  });
+  $$(".buy-inline").forEach(b=>{
+    b.addEventListener("click", (ev)=> { ev.stopPropagation(); openTopup(b.dataset.id); });
+  });
+}
+
+/* ===== Search ===== */
+function initSearch(){
+  const input = $("#searchInput");
+  input.addEventListener("input", function(){
+    const q = this.value.trim().toLowerCase();
+    if(!q) return renderGames();
+    const filtered = GAMES.filter(g => g.name.toLowerCase().includes(q));
+    renderGames(filtered);
+  });
+}
+
+/* ===== Sidebar controls & links ===== */
+function openSidebar(){ $("#sidebar").classList.add("open"); $("#overlay").style.display="block"; document.body.classList.add("no-scroll"); }
+function closeSidebar(){ $("#sidebar").classList.remove("open"); $("#overlay").style.display="none"; document.body.classList.remove("no-scroll"); }
+$("#menuBtn").addEventListener("click", ()=> { $("#sidebar").classList.toggle("open"); $("#overlay").style.display = $("#sidebar").classList.contains("open") ? "block":"none"; });
+$("#closeSidebar").addEventListener("click", closeSidebar);
+$("#overlay").addEventListener("click", closeSidebar);
+$$(".side-link").forEach(a=>{
+  a.addEventListener("click",(e)=>{ e.preventDefault(); const target = a.dataset.target; if(target){ const el = document.getElementById(target); if(el) el.scrollIntoView({behavior:"smooth", block:"start"}); } closeSidebar();});
+});
+
+/* ===== Top-up modal (flow) ===== */
+function showTopup(show){
+  const tp = $("#topupPage");
+  tp.classList.toggle("show", !!show);
+  tp.setAttribute("aria-hidden", show ? "false":"true");
+  document.body.classList.toggle("no-scroll", !!show);
+}
+function showStep(n){
+  $$(".tp-step").forEach(s=>s.classList.remove("active"));
+  const el = $(`#tp-step-${n}`); if(el) el.classList.add("active");
+  $$(".pstep").forEach(ps=> ps.classList.toggle("active", Number(ps.dataset.step) <= n));
+  // reset messages
+  $("#orderMsg").textContent = "";
+}
+function openTopup(id){
+  currentGame = GAMES.find(g=>g.id===id);
+  if(!currentGame){ alert("Game tidak ditemukan"); return; }
+  $("#topupTitle").textContent = `${currentGame.name} • Pilih nominal & metode`;
+  chosenPrice = null; chosenPayment = null;
+  $("#playerInput").value = "";
+  $("#orderMsg").textContent = "";
+  populateNominalSelect();
+  renderPayGrid();
+  showTopup(true);
+  showStep(1);
+}
+
+// populate nominal select with currentGame prices
+function populateNominalSelect(){
+  const sel = $("#nominalSelect");
+  sel.innerHTML = `<option value="">-- Pilih nominal --</option>` + currentGame.prices.map(p=>`<option value="${p.code}" data-price="${p.price}" data-label="${p.label}">${p.label} — Rp ${formatRp(p.price)}</option>`).join('');
+  // reset button states
+  $("#toStep3").disabled = true;
+  $("#buyBtn").disabled = true;
+  chosenPrice = null;
+}
+
+// pay grid
+function renderPayGrid(){
+  const grid = $("#payGrid");
+  grid.innerHTML = PAYMENTS.map(p=>`
+    <div class="pay-item" data-id="${p.id}">
+      <img src="${p.logo}" alt="${p.name}" onerror="this.style.opacity=.3" />
+      <div class="pname">${p.name}</div>
+    </div>`).join('');
+  $$(".pay-item").forEach(pi=>{
+    pi.addEventListener("click", ()=>{
+      $$(".pay-item").forEach(x=>x.classList.remove("active"));
+      pi.classList.add("active");
+      chosenPayment = pi.querySelector(".pname").textContent;
+      updateBuyState();
+    });
+  });
+}
+
+// update buy state
+function updateBuyState(){
+  const playerFilled = $("#playerInput").value.trim().length>0;
+  const priceSelected = !!chosenPrice;
+  const paySelected = !!chosenPayment;
+  $("#buyBtn").disabled = !(playerFilled && priceSelected && paySelected);
+}
+
+/* ===== History (localStorage) ===== */
+function saveHistory(order){
+  const arr = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+  arr.unshift(order);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(arr));
+  renderHistory();
+}
+function renderHistory(){
+  const el = $("#historyList");
+  if(!el) return;
+  const list = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+  el.innerHTML = list.length ? list.map(it=>`
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)">
+      <div style="max-width:70%">
+        <div style="font-weight:700">${it.game} • ${it.product}</div>
+        <div class="small" style="color:var(--muted)">${it.player} • ${it.date}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-weight:700">Rp ${formatRp(it.amount)}</div>
+        <div class="small" style="color:var(--muted)">${it.method}</div>
+      </div>
+    </div>`).join('') : "<div class='small' style='color:var(--muted)'>Belum ada transaksi.</div>";
+}
+
+/* ===== Events wiring ===== */
+document.addEventListener("DOMContentLoaded", ()=>{
+  renderGames();
+  initSearch();
+  setupBanner();
+
+  // header buttons
+  $("#allGamesBtn").addEventListener("click", ()=> { document.getElementById("games").scrollIntoView({behavior:"smooth"}); });
+  $("#promoBtn").addEventListener("click", ()=> { document.getElementById("promo").scrollIntoView({behavior:"smooth"}); });
+
+  // topup navigation
+  $("#toStep2").addEventListener("click", ()=>{
+    if(!$("#playerInput").value.trim()){ alert("Masukkan Player ID terlebih dahulu."); return; }
+    showStep(2);
+  });
+
+  // nominal select change
+  $("#nominalSelect").addEventListener("change", function(){
+    const idx = this.selectedIndex;
+    if(this.value === "") { chosenPrice = null; $("#toStep3").disabled = true; }
+    else {
+      const opt = this.options[this.selectedIndex];
+      chosenPrice = { code: opt.value, price: Number(opt.dataset.price), label: opt.dataset.label };
+      $("#toStep3").disabled = false;
+    }
+    updateBuyState();
+  });
+
+  $("#toStep3").addEventListener("click", ()=>{
+    if(!chosenPrice){ alert("Pilih nominal terlebih dahulu."); return; }
+    showStep(3);
+  });
+
+  // buy button -> open WA with prefilled message
+  $("#buyBtn").addEventListener("click", ()=>{
+    const player = $("#playerInput").value.trim();
+    if(!player || !chosenPrice || !chosenPayment){ alert("Lengkapi ID, nominal, dan metode pembayaran."); return; }
+    const order = { id:'ORD'+Date.now(), game: currentGame.name, product: chosenPrice.label, amount: chosenPrice.price, player, method: chosenPayment, date: new Date().toLocaleString() };
+    saveHistory(order);
+    const message = `Halo kak, saya mau top up:\nGame: ${order.game}\nID: ${order.player}\nNominal: ${order.product}\nMetode: ${order.method}`;
+    const waUrl = `https://wa.me/${CS_PHONE}?text=${encodeURIComponent(message)}`;
+    // open WA and show short success msg
+    window.open(waUrl, "_blank");
+    $("#orderMsg").textContent = `✅ Mengarahkan ke WhatsApp CS...`;
+    $("#orderMsg").style.color = "#7cffb0";
+    setTimeout(()=> showTopup(false), 900);
+  });
+
+  $("#cancelTopup").addEventListener("click", ()=> showTopup(false));
+  $("#closeTopup").addEventListener("click", ()=> showTopup(false));
+
+  // history panel
+  $("#historyBtn").addEventListener("click", ()=> { $("#historyPanel").classList.remove("hide"); renderHistory(); });
+  $("#closeHistory").addEventListener("click", ()=> { $("#historyPanel").classList.add("hide"); });
+  $("#clearHistory").addEventListener("click", ()=> { localStorage.removeItem(HISTORY_KEY); renderHistory(); });
+
+  // overlay closes sidebar
+  $("#overlay").addEventListener("click", closeSidebar);
+});
+</script>
+</body>
+</html>
