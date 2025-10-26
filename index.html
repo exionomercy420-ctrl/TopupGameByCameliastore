@@ -356,9 +356,9 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
     <!-- Banner slider (online images) -->
     <div class="banner-wrap" aria-hidden="false">
       <div id="bannerTrack" class="banner-track">
-        <div class="banner-item"><img src="https://i.postimg.cc/0NmnVngs/banner.jpg" alt="Promo 1"></div>
-        <div class="banner-item"><img src="https://i.postimg.cc/3xH2Kvd2/images-13.jpg" alt="Promo 2"></div>
-        <div class="banner-item"><img src="https://i.postimg.cc/76DHBSYh/images-14.jpg" alt="Promo 3"></div>
+        <div class="banner-item"><img src="asset/banner1.jpg" alt="Promo 1"></div>
+        <div class="banner-item"><img src="asset/banner2.jpeg" alt="Promo 2"></div>
+        <div class="banner-item"><img src="asset/banner3.jpeg" alt="Promo 3"></div>
       </div>
       <div id="bannerDots" class="banner-dots" aria-hidden="false"></div>
     </div>
@@ -466,7 +466,7 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
       <h3>Keunggulan</h3>
       <ul class="small" style="color:var(--muted);line-height:1.6">
         <li>🔒 Garansi 30% uang kembali jika ID salah (pastikan kembali sebelum bayar)</li>
-        <li>🔁 Garansi uang kembali jika ada kesalahan sistem</li>
+        <li>🔁 Garansi uang kembali jika ada kesalahan sistem S&K berlaku</li>
         <li>⚡ Proses instan max 1x24 jam</li>
         <li>💬 CS aktif 24 jam</li>
       </ul>
@@ -475,10 +475,10 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
     <div>
       <h3>Metode Pembayaran</h3>
       <div class="pay-logos">
-        <img src="https://i.postimg.cc/xdy65qQK/images-7.jpg" alt="Dana">
-        <img src="https://i.postimg.cc/7PpQqFKG/images-10.jpg" alt="OVO">
-        <img src="https://i.postimg.cc/DfYBBt9x/images-8.jpg" alt="GoPay">
-        <img src="https://i.postimg.cc/3w7Bk7Gm/images-9.jpg" alt="QRIS">
+        <img src="asset/dana.jpeg" alt="dana">
+        <img src="asset/ovo.jpeg" alt="ovo">
+        <img src="asset/gopay.jpeg" alt="gopay">
+        <img src="asset/qris.jpeg" alt="qris">
       </div>
     </div>
 
@@ -512,22 +512,56 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
 <script>
 /* ===== Data & util ===== */
 const GAMES = [
-  {id:"roblox",name:"Roblox",img:"https://i.postimg.cc/8cgx5xTw/images.jpg",prices:[{code:"R-80",label:"80 Robux",price:10000},{code:"R-400",label:"400 Robux",price:50000},{code:"R-800",label:"800 Robux",price:100000}]},
-  {id:"ff",name:"Free Fire",img:"https://i.postimg.cc/4NNB5X2P/images-1.jpg",prices:[{code:"FF-50",label:"50 Diamonds",price:10000},{code:"FF-140",label:"140 Diamonds",price:20000},{code:"FF-370",label:"370 Diamonds",price:50000}]},
-  {id:"pubg",name:"PUBG Mobile",img:"https://i.postimg.cc/xj6s1YmF/images-2.jpg",prices:[{code:"P-60",label:"60 UC",price:10000},{code:"P-300",label:"300 UC",price:50000},{code:"P-600",label:"600 UC",price:100000}]},
-  {id:"undawn",name:"Undawn",img:"https://i.postimg.cc/RVHq2HYV/images-3.jpg",prices:[{code:"U-100",label:"100 Gold",price:10000},{code:"U-500",label:"500 Gold",price:50000},{code:"U-1000",label:"1000 Gold",price:100000}]},
-  {id:"ml",name:"Mobile Legends",img:"https://i.postimg.cc/hhW4K2YK/images-4.jpg",prices:[{code:"ML-86",label:"86 Diamond",price:10000},{code:"ML-170",label:"170 Diamond",price:20000},{code:"ML-515",label:"515 Diamond",price:50000}]},
-  {id:"genshin",name:"Genshin Impact",img:"https://i.postimg.cc/KvD4Z2mw/images-5.jpg",prices:[{code:"G-60",label:"60 Genesis",price:10000},{code:"G-300",label:"300 Genesis",price:50000},{code:"G-648",label:"648 Genesis",price:100000}]},
-  {id:"zepeto",name:"Zepeto",img:"https://i.postimg.cc/sXCRQMcg/images-6.jpg",prices:[{code:"Z-100",label:"100 Coins",price:10000},{code:"Z-500",label:"500 Coins",price:50000},{code:"Z-1000",label:"1000 Coins",price:100000}]}
+  {id:"roblox", name:"Roblox", img:"asset/roblox.jpeg", prices:[
+    {code:"R-80", label:"80 Robux", price:10000},
+    {code:"R-400", label:"400 Robux", price:50000},
+    {code:"R-800", label:"800 Robux", price:100000}
+  ]},
+  
+  {id:"ff", name:"Free Fire", img:"asset/ff.jpeg", prices:[
+    {code:"FF-50", label:"50 Diamonds", price:10000},
+    {code:"FF-140", label:"140 Diamonds", price:20000},
+    {code:"FF-370", label:"370 Diamonds", price:50000}
+  ]},
+  
+  {id:"pubg", name:"PUBG Mobile", img:"asset/pubg.jpeg", prices:[
+    {code:"P-60", label:"60 UC", price:10000},
+    {code:"P-300", label:"300 UC", price:50000},
+    {code:"P-600", label:"600 UC", price:100000}
+  ]},
+  
+  {id:"undawn", name:"Undawn", img:"asset/undawn.jpeg", prices:[
+    {code:"U-100", label:"100 Gold", price:10000},
+    {code:"U-500", label:"500 Gold", price:50000},
+    {code:"U-1000", label:"1000 Gold", price:100000}
+  ]},
+  
+  {id:"ml", name:"Mobile Legends", img:"asset/ml.jpeg", prices:[
+    {code:"ML-86", label:"86 Diamonds", price:10000},
+    {code:"ML-170", label:"170 Diamonds", price:20000},
+    {code:"ML-514", label:"514 Diamonds", price:50000}
+  ]},
+  
+  {id:"zepeto", name:"Zepeto", img:"asset/zepeto.jpeg", prices:[
+    {code:"Z-10K", label:"10.000 Coin", price:10000},
+    {code:"Z-50K", label:"50.000 Coin", price:50000},
+    {code:"Z-100K", label:"100.000 Coin", price:100000}
+  ]},
+  
+  {id:"genshin", name:"Genshin Impact", img:"asset/genshin.jpeg", prices:[
+    {code:"GI-60", label:"60 Genesis", price:10000},
+    {code:"GI-330", label:"330 Genesis", price:50000},
+    {code:"GI-980", label:"980 Genesis", price:100000}
+  ]}
 ];
 
 const PAYMENTS = [
-  {id:"gopay",name:"GoPay",logo:"https://i.postimg.cc/DfYBBt9x/images-8.jpg"},
-  {id:"dana",name:"Dana",logo:"https://i.postimg.cc/xdy65qQK/images-7.jpg"},
-  {id:"qris",name:"QRIS",logo:"https://i.postimg.cc/3w7Bk7Gm/images-9.jpg"},
-  {id:"shopee",name:"ShopeePay",logo:"https://i.postimg.cc/65PQ9Jq9/images-12.jpg"},
-  {id:"ovo",name:"OVO",logo:"https://i.postimg.cc/7PpQqFKG/images-10.jpg"},
-  {id:"seabank",name:"Seabank",logo:"https://i.postimg.cc/15BpMzWz/images-11.jpg"},
+  {id:"gopay", name:"GoPay", logo:"asset/gopay.jpeg"},
+  {id:"dana", name:"Dana", logo:"asset/dana.jpeg"},
+  {id:"qris", name:"QRIS", logo:"asset/qris.jpeg"},
+  {id:"shopee", name:"ShopeePay", logo:"asset/shoope1.png"},
+  {id:"ovo", name:"OVO", logo:"asset/ovo.jpeg"},
+  {id:"seabank", name:"Seabank", logo:"asset/seabank.jpeg"}
 ];
 
 const CS_PHONE = "6288294179052"; // WA CS (converted to proper WA format)
@@ -1006,13 +1040,35 @@ document.addEventListener("DOMContentLoaded", ()=>{
   $("#cancelTopup").addEventListener("click", ()=> showTopup(false));
   $("#closeTopup").addEventListener("click", ()=> showTopup(false));
 
-  // history panel
-  $("#historyBtn").addEventListener("click", ()=> { $("#historyPanel").classList.remove("hide"); renderHistory(); });
-  $("#closeHistory").addEventListener("click", ()=> { $("#historyPanel").classList.add("hide"); });
-  $("#clearHistory").addEventListener("click", ()=> { localStorage.removeItem(HISTORY_KEY); renderHistory(); });
+// history panel (fixed)
+$("#historyBtn").addEventListener("click", ()=> {
+  const panel = $("#historyPanel");
+  panel.classList.remove("hide");
+  panel.style.display = "flex"; // tampilkan flex biar kelihatan
+  renderHistory();
+});
 
-  // overlay closes sidebar
-  $("#overlay").addEventListener("click", closeSidebar);
+// === Fungsi Hapus Riwayat ===
+function clearHistory() {
+  if (confirm("Yakin mau hapus semua riwayat top-up?")) {
+    localStorage.removeItem(HISTORY_KEY); // hapus dari localStorage
+    $("#historyList").innerHTML = "<p style='text-align:center;opacity:.7'>Belum ada transaksi</p>";
+  }
+}
+$("#clearHistory").addEventListener("click", clearHistory);
+
+// tombol ❌ untuk nutup panel riwayat
+const closeHistory = document.getElementById("closeHistory");
+if (closeHistory) {
+  closeHistory.addEventListener("click", () => {
+    const panel = document.getElementById("historyPanel");
+    panel.classList.add("hide");
+    panel.style.display = "none";
+  });
+}
+
+// overlay closes sidebar
+$("#overlay").addEventListener("click", closeSidebar);
 });
 </script>
 </body>
