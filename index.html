@@ -131,6 +131,17 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
   100% { transform: translate(-50%,-50%) translateX(0); }
 }
 
+/* music control (floating) */
+.music-control{
+  position:fixed; right:18px; bottom:18px; z-index:1100; display:flex; gap:8px; align-items:center;
+  background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  padding:8px;border-radius:12px;backdrop-filter: blur(6px); box-shadow:0 8px 30px rgba(0,0,0,0.5);
+}
+.music-btn{
+  width:42px;height:42px;border-radius:10px;border:none;background:transparent;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.music-label{font-size:12px;color:var(--muted);padding-right:6px}
+
 /* history panel */
 .panel-card{box-shadow:0 20px 60px rgba(0,0,0,0.6)}
 
@@ -146,6 +157,7 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
   .banner-item{height:140px}
   .topup-inner{margin:24px}
   .center-toast{min-width:220px;padding:14px}
+  .music-control{right:12px;bottom:12px}
 }
 </style>
 </head>
@@ -331,6 +343,13 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
     <div id="historyList" class="small" style="margin-top:8px;color:var(--muted)"></div>
     <div style="margin-top:12px"><button id="clearHistory" class="btn-ghost">Hapus Riwayat</button></div>
   </div>
+</div>
+
+<!-- MUSIC CONTROL (floating) -->
+<div class="music-control" id="musicControl" aria-hidden="false" title="Kontrol musik">
+  <div class="music-label" id="musicLabel">Musik: On</div>
+  <button class="music-btn" id="musicToggle" aria-label="Play/Pause">⏯</button>
+  <button class="music-btn" id="musicMute" aria-label="Mute/Unmute">🔈</button>
 </div>
 
 <script>
@@ -541,11 +560,105 @@ function showToast(type){
   }, 2000);
 }
 
+/* ===== MUSIC: setup minimal player + controls ===== */
+/*
+ - Replace MUSIC_URL value with your audio file URL (or local filename).
+ - Behavior:
+    * Try autoplay muted (browsers allow muted autoplay).
+    * Users can unmute and play/pause via floating controls.
+    * Volume defaults to 0.16.
+*/
+const MUSIC_URL = "https://files.catbox.moe/jy2mwq.mp3"; // <-- ganti sesuai kebutuhan
+let audio = null;
+let musicPlaying = false;
+let musicMuted = false;
+
+function initMusic(){
+  audio = new Audio(MUSIC_URL);
+  audio.loop = true;
+  audio.preload = "auto";
+  audio.volume = 0.16;
+
+  // try autoplay muted (to satisfy autoplay rules)
+  audio.muted = true;
+  audio.play().then(()=> {
+    musicPlaying = true;
+    musicMuted = true;
+    updateMusicUI();
+  }).catch(()=> {
+    // autoplay blocked — keep paused (user interaction will start)
+    musicPlaying = false;
+    musicMuted = true;
+    updateMusicUI();
+  });
+
+  // UI elements
+  const btnToggle = $("#musicToggle");
+  const btnMute = $("#musicMute");
+  const label = $("#musicLabel");
+
+  btnToggle.addEventListener("click", (e)=>{
+    e.preventDefault();
+    if(!audio) return;
+    if(musicPlaying){
+      audio.pause();
+      musicPlaying = false;
+    } else {
+      // if audio was muted (from autoplay), unmute when user explicitly plays
+      if(audio.muted && !musicMuted){
+        audio.muted = false;
+      }
+      audio.play().catch(()=>{ /* ignore */ });
+      musicPlaying = true;
+    }
+    updateMusicUI();
+  });
+
+  btnMute.addEventListener("click", (e)=>{
+    e.preventDefault();
+    if(!audio) return;
+    // toggle mute
+    musicMuted = !musicMuted;
+    audio.muted = musicMuted;
+    // if user unmutes but audio not playing, start playback (user intent)
+    if(!musicMuted && !musicPlaying){
+      audio.play().then(()=> musicPlaying = true).catch(()=>{/*ignore*/});
+    }
+    updateMusicUI();
+  });
+
+  function updateMusicUI(){
+    const labelTxt = musicPlaying ? (musicMuted ? "Musik: On (muted)" : "Musik: On") : "Musik: Off";
+    $("#musicLabel").textContent = labelTxt;
+    $("#musicToggle").textContent = musicPlaying ? "⏸" : "⏯";
+    $("#musicMute").textContent = musicMuted ? "🔇" : "🔈";
+  }
+}
+
+// Expose a safe function to change music source programmatically if needed
+function setMusicSource(url){
+  if(!audio) initMusic();
+  const wasPlaying = musicPlaying;
+  audio.pause();
+  audio.src = url;
+  audio.load();
+  audio.muted = true;
+  audio.volume = 0.16;
+  audio.play().then(()=> {
+    musicPlaying = true;
+    musicMuted = true;
+    if(!wasPlaying){ audio.pause(); musicPlaying = false; }
+    // update UI
+    $("#musicLabel").textContent = musicPlaying ? (musicMuted ? "Musik: On (muted)" : "Musik: On") : "Musik: Off";
+  }).catch(()=>{/*ignore*/});
+}
+
 /* ===== Events wiring ===== */
 document.addEventListener("DOMContentLoaded", ()=>{
   renderGames();
   initSearch();
   setupBanner();
+  initMusic();
 
   // header buttons
   $("#allGamesBtn").addEventListener("click", ()=> { document.getElementById("games").scrollIntoView({behavior:"smooth"}); });
