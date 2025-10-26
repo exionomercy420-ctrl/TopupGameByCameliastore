@@ -3,17 +3,154 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Camelia Store - Top Up (Final)</title>
+<title>Petir Biru Store - Top Up (Final)</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#120018; --card:#230031; --muted:#cdb9e6;
-  --accent:#7c5cff; --accent-2:#ff5df0; --radius:14px;
-  --glow-c: 115, 92, 255; /* cyan-violet-ish glow base */
+  --accent:#00BFFF; /* primary neon blue */
+  --accent-2:#7fe9ff; /* secondary lighter blue */
+  --radius:14px;
+  --glow-c: 0, 191, 255; /* blue glow RGB */
 }
+/* reset / base */
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linear-gradient(180deg,var(--bg),#2a003f 60%);color:#fff;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}
+html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linear-gradient(180deg,var(--bg),#2a003f 60%);color:#fff;-webkit-font-smoothing:antialiased;position:relative;}
+
+/* ---------- LIGHTNING / GLOW BACKDROP ---------- */
+/* container sits above page background but below (or above) content.
+   z-index set high but pointer-events:none so it won't block clicks. */
+#lightning {
+  pointer-events: none;
+  position:fixed;
+  inset:0;
+  z-index:1400; /* intentionally above most UI but non-interactive */
+  overflow:hidden;
+  mix-blend-mode:screen; /* makes glow blend nicely with bg */
+}
+
+/* soft drifting glow blobs (original, preserved) */
+.light-bolt {
+  position:absolute;
+  width:380px;
+  height:380px;
+  border-radius:50%;
+  filter: blur(40px) saturate(140%);
+  opacity:0;
+  transform:translate3d(0,0,0) scale(0.7);
+  animation:boltPulse linear infinite;
+  background: radial-gradient(circle at 40% 30%, rgba(0,191,255,0.35), rgba(0,191,255,0.12) 25%, rgba(127,233,255,0.06) 45%, transparent 60%);
+}
+.light-bolt.small{ width:220px;height:220px; filter: blur(30px); }
+.light-bolt.xsmall{ width:140px;height:140px; filter: blur(22px); }
+
+@keyframes boltPulse {
+  0%   {opacity:0; transform:translateY(0px) scale(0.85);}
+  10%  {opacity:0.18;}
+  50%  {opacity:0.32; transform:translateY(-18px) scale(1);}
+  90%  {opacity:0.12;}
+  100% {opacity:0; transform:translateY(0px) scale(0.85);}
+}
+
+/* previous flash overlay (kept but we'll also use .strike for stronger flash) */
+#lightning .flash-overlay {
+  position:absolute; inset:0; background: radial-gradient(circle at 50% 20%, rgba(255,255,255,0.18), rgba(0,191,255,0.06) 35%, transparent 55%);
+  opacity:0; transition:opacity .12s ease;
+  mix-blend-mode:screen;
+}
+
+/* small streak / linear bolt (kept for subtle effect) */
+.streak {
+  position:absolute;
+  width:4px;
+  height:120px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(0,191,255,0.6) 40%, rgba(0,191,255,0.0) 100%);
+  opacity:0;
+  filter: blur(2px);
+  transform: rotate(10deg) translateY(-20px);
+  transition:opacity .08s linear, transform .18s ease;
+}
+#lightning.strike .streak {
+  opacity:0.95;
+  transform: rotate(8deg) translateY(8px);
+}
+
+/* reduce intensity on small screens */
+@media (max-width:600px){
+  .light-bolt{ display:block; width:140px;height:140px; filter: blur(22px); }
+  .light-bolt.small{ display:none; }
+  .streak{ display:none; }
+}
+
+/* ---------- NEW: REALISTIC SVG BOLT STYLES (dramatic) ---------- */
+/* container for generated SVG bolts */
+.bolt-svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* style for the bolt path */
+.bolt-path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke: white; /* base color */
+  stroke-width: 2.6;
+  opacity: 0.0;
+  filter: drop-shadow(0 0 8px rgba(180,220,255,0.9)) blur(0.2px);
+  mix-blend-mode: screen;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  transition: opacity .12s linear;
+}
+
+/* animated draw */
+@keyframes bolt-draw {
+  0% { stroke-dashoffset: 1000; opacity: 1; }
+  40% { stroke-dashoffset: 200; opacity: 1; }
+  70% { stroke-dashoffset: 80; opacity: 0.8; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+/* full-screen flash for dramatic look */
+#lightning.strike::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.85), rgba(127,233,255,0.12) 45%, rgba(50,160,255,0.02) 70%, transparent 85%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: strikeFlash .18s ease-out;
+}
+@keyframes strikeFlash {
+  0% { opacity: 0; transform: scale(1); }
+  10% { opacity: 1; transform: scale(1.02); }
+  40% { opacity: 0.45; transform: scale(1.01); }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+/* subtle trailing glow for bolt (thin outer glow stroke) */
+.bolt-path-glow {
+  fill: none;
+  stroke: rgba(127,233,255,0.85);
+  stroke-width: 6;
+  filter: blur(6px);
+  opacity: 0;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+}
+
+/* small responsive tweaks */
+@media (max-width:600px){
+  .bolt-path { stroke-width: 1.8; }
+  .bolt-path-glow { stroke-width: 4; }
+}
+
+/* ---------- UI / rest of site (unchanged, preserved) ---------- */
 
 /* Header */
 .header{
@@ -27,7 +164,7 @@ a{color:inherit;text-decoration:none}
 .header-right{margin-left:auto;display:flex;gap:8px;align-items:center}
 .search{padding:8px 10px;border-radius:12px;border:none;background:rgba(255,255,255,0.03);color:var(--muted);width:160px}
 .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
-.btn-primary{background:linear-gradient(90deg,var(--accent-2),#b86ef2);border:none;padding:10px 14px;border-radius:12px;color:#2a002b;cursor:pointer;box-shadow:0 8px 24px rgba(124,92,255,0.12)}
+.btn-primary{background:linear-gradient(90deg,var(--accent-2),#6fefff);border:none;padding:10px 14px;border-radius:12px;color:#002;cursor:pointer;box-shadow:0 8px 24px rgba(0,191,255,0.12)}
 .btn-primary:active{transform:translateY(1px)}
 
 /* Layout */
@@ -36,12 +173,12 @@ a{color:inherit;text-decoration:none}
 .hero h1{margin:0;font-size:28px;color:var(--accent-2)}
 .hero p{color:var(--muted);margin:10px 0 16px;line-height:1.55}
 .hero-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
-.promo-pill{background:linear-gradient(90deg,#8453ff,#d67bff);padding:10px 14px;border-radius:14px;font-weight:600;color:#fff}
+.promo-pill{background:linear-gradient(90deg,#28d4ff,#9beeff);padding:10px 14px;border-radius:14px;font-weight:600;color:#001}
 
 /* Banner slider */
 .banner-wrap{margin:10px 0 18px;position:relative;overflow:hidden;border-radius:14px;max-width:1100px;margin-left:auto;margin-right:auto}
 .banner-track{display:flex;transition:transform .5s ease}
-.banner-item{min-width:100%;height:200px;background:#2a0036;display:flex;align-items:center;justify-content:center;position:relative}
+.banner-item{min-width:100%;height:200px;background:#002b44;display:flex;align-items:center;justify-content:center;position:relative}
 .banner-item img{width:100%;height:100%;object-fit:cover;display:block;border-radius:14px}
 .banner-dots{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:8px}
 .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.35);cursor:pointer}
@@ -51,14 +188,14 @@ a{color:inherit;text-decoration:none}
 .section-title{color:var(--accent);margin:12px 0 10px;font-size:18px;text-align:left}
 .game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;padding-bottom:40px}
 .card-game{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:16px 12px;text-align:center;cursor:pointer;border:1px solid rgba(255,255,255,0.03);transition:transform .14s;box-shadow:0 8px 30px rgba(0,0,0,0.25) inset}
-.card-game:focus{outline:3px solid rgba(124,92,255,0.12)}
+.card-game:focus{outline:3px solid rgba(0,191,255,0.12)}
 .card-game:hover{transform:translateY(-6px)}
 .card-game img{width:72px;height:72px;border-radius:12px;object-fit:cover;margin:8px auto}
 .gname{font-weight:700;margin-top:6px}
 
 /* Sidebar & overlay */
 .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:300;display:none;transition:opacity .22s}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:linear-gradient(180deg,#1b0128,#2b003f);padding:18px;transform:translateX(-320px);transition:transform .28s ease;z-index:320;border-right:1px solid rgba(255,255,255,0.02)}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:linear-gradient(180deg,#001428,#00243a);padding:18px;transform:translateX(-320px);transition:transform .28s ease;z-index:320;border-right:1px solid rgba(255,255,255,0.02)}
 .sidebar.open{transform:translateX(0)}
 .sidebar .close-btn{display:flex;justify-content:flex-end}
 .sidebar .close-btn button{background:none;border:none;color:#fff;font-size:22px;cursor:pointer}
@@ -68,15 +205,15 @@ a{color:inherit;text-decoration:none}
 /* Top-up modal full page */
 .topup-page{position:fixed;inset:0;z-index:450;display:none;align-items:flex-start;justify-content:center;padding:18px;overflow:auto;background:rgba(0,0,0,0.55)}
 .topup-page.show{display:flex}
-.topup-inner{width:100%;max-width:640px;background:linear-gradient(180deg,#1a0420,#240531);border-radius:16px;padding:14px;box-shadow:0 40px 120px rgba(0,0,0,0.7)}
+.topup-inner{width:100%;max-width:640px;background:linear-gradient(180deg,#00101a,#002033);border-radius:16px;padding:14px;box-shadow:0 40px 120px rgba(0,0,0,0.7)}
 .topup-head{display:flex;align-items:center;gap:8px;justify-content:space-between}
 .topup-title{font-weight:700}
 .topup-body{margin-top:8px}
 .progress{position:relative;padding:16px 6px}
-.progress-line{height:6px;background:#3a003f;border-radius:6px;opacity:0.5}
+.progress-line{height:6px;background:#00243a;border-radius:6px;opacity:0.5}
 .progress-steps{position:absolute;top:6px;left:12px;right:12px;display:flex;justify-content:space-between}
-.pstep{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#3a003f;color:#cbb5ff;font-weight:700}
-.pstep.active{background:linear-gradient(90deg,var(--accent-2),#ffb3ff);color:#2a002b;box-shadow:0 8px 30px rgba(255,93,240,0.12)}
+.pstep{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#00243a;color:#cbb5ff;font-weight:700}
+.pstep.active{background:linear-gradient(90deg,var(--accent-2),#9beeff);color:#002;box-shadow:0 8px 30px rgba(127,233,255,0.12)}
 .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:16px;border-radius:12px;margin-bottom:12px;border:1px solid rgba(255,255,255,0.03)}
 .tp-step{display:none}
 .tp-step.active{display:block}
@@ -85,12 +222,12 @@ a{color:inherit;text-decoration:none}
 
 /* price & pay grids */
 .price-grid,.pay-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
-.price-item{background:#2a0036;border-radius:12px;padding:12px;cursor:pointer;border:1px solid rgba(255,255,255,0.03);transition:all .16s}
+.price-item{background:#002b44;border-radius:12px;padding:12px;cursor:pointer;border:1px solid rgba(255,255,255,0.03);transition:all .16s}
 .price-item .label{font-weight:700}
 .price-item .muted{color:var(--muted);font-size:13px}
 .price-item:hover{transform:translateY(-4px)}
 .price-item.active{background:#fff;color:#150018;box-shadow:0 10px 30px rgba(0,0,0,0.45)}
-.pay-item{display:flex;align-items:center;gap:10px;background:#2a0036;border-radius:12px;padding:10px;cursor:pointer;border:1px solid rgba(255,255,255,0.03);transition:all .16s}
+.pay-item{display:flex;align-items:center;gap:10px;background:#002b44;border-radius:12px;padding:10px;cursor:pointer;border:1px solid rgba(255,255,255,0.03);transition:all .16s}
 .pay-item img{height:36px;width:auto}
 .pay-item .pname{font-weight:600}
 .pay-item:hover{transform:translateY(-4px)}
@@ -99,12 +236,12 @@ a{color:inherit;text-decoration:none}
 .small{font-size:13px;color:var(--muted)}
 
 /* footer */
-footer{background:#100022;padding:36px 18px;margin-top:30px}
+footer{background:#00101a;padding:36px 18px;margin-top:30px}
 .footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
 footer h3{color:var(--accent-2);margin-bottom:8px}
 .pay-logos{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
 .pay-logos img{width:48px;border-radius:6px;background:#fff;padding:4px}
-.contact a{color:#8f73ff;display:block;margin-top:6px}
+.contact a{color:#66d1ff;display:block;margin-top:6px}
 .bottom{text-align:center;margin-top:20px;color:#a599cc}
 
 /* center popup (sukses/gagal) */
@@ -116,7 +253,7 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
   text-align:center;
 }
 .center-toast.show{display:flex;flex-direction:column;animation:popIn .22s ease forwards}
-.center-toast.success{background:linear-gradient(90deg, rgba(124,92,255,0.98), rgba(255,93,240,0.94)); color:#fff;}
+.center-toast.success{background:linear-gradient(90deg, rgba(127,233,255,0.98), rgba(127,233,255,0.94)); color:#fff;}
 .center-toast.fail{background:linear-gradient(90deg, rgba(255,80,80,0.98), rgba(255,130,130,0.94)); color:#fff;}
 @keyframes popIn{ from { transform:translate(-50%,-50%) scale(.96); opacity:0 } to { transform:translate(-50%,-50%) scale(1); opacity:1 } }
 
@@ -163,9 +300,29 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
 </head>
 <body>
 
+<!-- LIGHTNING / GLOW LAYER (visual only, no sound) -->
+<div id="lightning" aria-hidden="true">
+  <!-- multiple glows (preserved) -->
+  <div class="light-bolt" data-pos="1" style="animation-duration:9s; animation-delay:0s"></div>
+  <div class="light-bolt small" data-pos="2" style="animation-duration:11s; animation-delay:1.5s"></div>
+  <div class="light-bolt" data-pos="3" style="animation-duration:10s; animation-delay:3s"></div>
+  <div class="light-bolt small" data-pos="4" style="animation-duration:12s; animation-delay:5s"></div>
+  <div class="light-bolt xsmall" data-pos="5" style="animation-duration:8s; animation-delay:2s"></div>
+
+  <!-- subtle flash overlay for strikes -->
+  <div class="flash-overlay"></div>
+
+  <!-- linear streaks that appear during strike -->
+  <div class="streak" style="left:22%; top:6%; height:160px;"></div>
+  <div class="streak" style="left:68%; top:10%; height:180px; transform: rotate(-6deg) translateY(-20px)"></div>
+
+  <!-- container where JS will append SVG bolts -->
+  <div class="bolt-svg" id="boltSvgContainer" aria-hidden="true"></div>
+</div>
+
 <header class="header">
   <button id="menuBtn" class="menu-btn" aria-label="Buka menu">☰</button>
-  <div class="brand"><span class="gem">💎</span> Camelia Store</div>
+  <div class="brand"><span class="gem">💎</span> Petir Biru Store</div>
 
   <div class="header-right" style="margin-left:auto">
     <input id="searchInput" class="search" placeholder="Cari game (Roblox, FF...)" />
@@ -189,7 +346,7 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
 <main class="container" id="mainContent">
   <!-- HERO -->
   <section id="home" class="hero" tabindex="-1">
-    <h1>Camelia Store</h1>
+    <h1>Petir Biru Store</h1>
     <p>Platform top-up cepat & aman untuk semua kalangan — dari pemain muda sampai dewasa. Harga bersahabat, proses instan max 1x24 jam, dan dukungan CS siap membantu.</p>
     <div class="hero-actions">
       <button id="allGamesBtn" class="btn-primary">Lihat Semua Game</button>
@@ -301,8 +458,8 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
 <footer id="kontak" style="scroll-margin-top:90px">
   <div class="footer-grid" style="max-width:1100px;margin:0 auto;padding:30px 18px">
     <div>
-      <h3 id="tentang">Tentang Camelia Store</h3>
-      <p class="small">Camelia Store hadir untuk semua gamer — cepat, aman, dan mudah. Top-up tanpa ribet, dukungan CS responsif, dan garansi bila terjadi kesalahan.</p>
+      <h3 id="tentang">Tentang Petir Biru Store</h3>
+      <p class="small">Petir Biru Store hadir untuk semua gamer — cepat, aman, dan mudah. Top-up tanpa ribet, dukungan CS responsif, dan garansi bila terjadi kesalahan.</p>
     </div>
 
     <div>
@@ -332,7 +489,7 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
       <p class="small" style="margin-top:8px">Follow channel PB Store untuk promo & referral 5%.</p>
     </div>
   </div>
-  <div class="bottom">© 2025 Camelia Store • All rights reserved</div>
+  <div class="bottom">© 2025 Petir Biru Store • All rights reserved</div>
 </footer>
 
 <!-- HISTORY PANEL -->
@@ -467,7 +624,7 @@ function showTopup(show){
 }
 function showStep(n){
   $$(".tp-step").forEach(s=>s.classList.remove("active"));
-  const el = $(`#tp-step-${n}`); if(el) el.classList.add("active");
+  const el = $(`#tp-step-${n}`); if(el) el.classList.add('active');
   $$(".pstep").forEach(ps=> ps.classList.toggle("active", Number(ps.dataset.step) <= n));
   $("#orderMsg").textContent = "";
 }
@@ -595,7 +752,6 @@ function initMusic(){
   // UI elements
   const btnToggle = $("#musicToggle");
   const btnMute = $("#musicMute");
-  const label = $("#musicLabel");
 
   btnToggle.addEventListener("click", (e)=>{
     e.preventDefault();
@@ -653,7 +809,148 @@ function setMusicSource(url){
   }).catch(()=>{/*ignore*/});
 }
 
-/* ===== Events wiring ===== */
+/* ===== LIGHTNING CONTROL (visual only, dramatic & realistic) ===== */
+(function initLightning(){
+  const lightning = document.getElementById('lightning');
+  const svgContainer = document.getElementById('boltSvgContainer');
+  if(!lightning || !svgContainer) return;
+
+  // Helper: create randomized jagged polyline path for a bolt
+  function randomBoltPath(startX, startY, length, segments) {
+    // produce an array of points from start downward with horizontal jitter
+    const pts = [];
+    let x = startX;
+    let y = startY;
+    pts.push([x, y]);
+    const segH = length / segments;
+    for(let i=1;i<=segments;i++){
+      // progressively widen jitter a bit then narrow
+      const jitter = Math.max(6, (segments - i) * 1.8 + Math.random() * 12);
+      x += (Math.random() * jitter * 2) - jitter;
+      y += segH + (Math.random() * segH * 0.35);
+      pts.push([x, y]);
+    }
+    return pts;
+  }
+
+  // Create an SVG bolt, animate it, then remove
+  function createSvgBolt(centerX, centerY) {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("class", "bolt-svg-instance");
+    svg.setAttribute("width", w);
+    svg.setAttribute("height", h);
+    svg.style.position = "absolute";
+    svg.style.left = "0";
+    svg.style.top = "0";
+    svg.style.pointerEvents = "none";
+
+    // randomize length and segments for variation
+    const length = 80 + Math.random() * (h * 0.5); // how far downward
+    const segments = 6 + Math.floor(Math.random() * 6);
+
+    // pick a start point (centerX=center px from left)
+    const startX = Math.max(8, Math.min(w - 8, centerX));
+    const startY = Math.max(8, Math.min(h - 8, centerY));
+
+    const points = randomBoltPath(startX, startY, length, segments);
+    const ptsStr = points.map(p => p.join(',')).join(' ');
+
+    // glow path (thicker, blurred)
+    const glowPath = document.createElementNS(svgNS, "polyline");
+    glowPath.setAttribute("points", ptsStr);
+    glowPath.setAttribute("class", "bolt-path-glow");
+    glowPath.style.opacity = "0";
+    svg.appendChild(glowPath);
+
+    // main white path
+    const path = document.createElementNS(svgNS, "polyline");
+    path.setAttribute("points", ptsStr);
+    path.setAttribute("class", "bolt-path");
+    // color gradient slight purple tint - using inline stroke attr for fine color
+    path.setAttribute("stroke", "rgba(255,255,255,1)");
+    svg.appendChild(path);
+
+    svgContainer.appendChild(svg);
+
+    // Force reflow and then animate using CSS keyframes by setting animation
+    // Apply different stroke widths/opacity for variety
+    const baseStroke = 2 + Math.random() * 2.6;
+    path.style.strokeWidth = baseStroke;
+    glowPath.style.strokeWidth = baseStroke * 3.2;
+
+    // set dasharray to total estimated length (kept large) and run animation
+    // we use CSS animation for stroke-draw simulation
+    path.style.animation = `bolt-draw .22s ease-out forwards`;
+    glowPath.style.animation = `bolt-draw .26s ease-out forwards`;
+    // glow appears slightly earlier and lingers a touch
+    glowPath.style.opacity = "0.9";
+    path.style.opacity = "1";
+
+    // subtle flicker: change opacity quickly for dramatic effect
+    setTimeout(()=> { try { path.style.opacity = "0.95"; glowPath.style.opacity = "0.85"; } catch(e){} }, 30);
+
+    // Clean up after short time
+    setTimeout(()=> {
+      // fade out quickly
+      path.style.transition = "opacity .12s linear";
+      glowPath.style.transition = "opacity .18s linear";
+      path.style.opacity = "0";
+      glowPath.style.opacity = "0";
+      setTimeout(()=> { svg.remove(); }, 240);
+    }, 360);
+  }
+
+  // single strike: flash screen + 1..3 bolts at slightly offset x positions
+  function doStrike() {
+    // dramatic full-screen flash class
+    lightning.classList.add('strike');
+    setTimeout(()=> lightning.classList.remove('strike'), 160 + Math.random()*100);
+
+    // create several bolts near each other for drama
+    const bolts = 1 + Math.floor(Math.random()*3); // 1..3
+    const baseX = Math.random() * window.innerWidth;
+    const baseY = Math.random() * window.innerHeight * 0.45; // prefer upper half for realism
+
+    for(let i=0;i<bolts;i++){
+      const offsetX = (Math.random() - 0.5) * 160; // spread
+      const offsetY = (Math.random() - 0.5) * 60;
+      setTimeout(()=> createSvgBolt(baseX + offsetX, Math.max(20, baseY + offsetY)), i * 60);
+    }
+  }
+
+  // scheduling strikes between 5-10s (dramatic mode)
+  function schedule() {
+    const delay = 5000 + Math.random() * 5000; // 5000-10000 ms
+    setTimeout(()=> {
+      doStrike();
+      schedule();
+    }, delay);
+  }
+
+  // Small jitter of soft glow durations (keeps background lively)
+  function jitterBolts(){
+    const bolts = lightning.querySelectorAll('.light-bolt');
+    bolts.forEach(b => {
+      const dur = 8 + Math.random()*6;
+      const delay = Math.random()*6;
+      b.style.animationDuration = dur + 's';
+      b.style.animationDelay = delay + 's';
+    });
+  }
+
+  // Start
+  schedule();
+  setInterval(jitterBolts, 15000);
+
+  // Optional: expose for debugging / manual trigger
+  window.__triggerLightning = () => doStrike();
+
+})();
+
+/* ===== EVENTS wiring & rest of original JS (unchanged) ===== */
 document.addEventListener("DOMContentLoaded", ()=>{
   renderGames();
   initSearch();
