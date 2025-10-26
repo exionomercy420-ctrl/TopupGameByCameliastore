@@ -9,6 +9,7 @@
 :root{
   --bg:#120018; --card:#230031; --muted:#cdb9e6;
   --accent:#7c5cff; --accent-2:#ff5df0; --radius:14px;
+  --glow-c: 115, 92, 255; /* cyan-violet-ish glow base */
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linear-gradient(180deg,var(--bg),#2a003f 60%);color:#fff;-webkit-font-smoothing:antialiased}
@@ -31,23 +32,23 @@ a{color:inherit;text-decoration:none}
 
 /* Layout */
 .container{max-width:1100px;margin:18px auto;padding:0 16px}
-.hero{padding:22px 0}
+.hero{padding:22px 0;text-align:center}
 .hero h1{margin:0;font-size:28px;color:var(--accent-2)}
 .hero p{color:var(--muted);margin:10px 0 16px;line-height:1.55}
-.hero-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.hero-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
 .promo-pill{background:linear-gradient(90deg,#8453ff,#d67bff);padding:10px 14px;border-radius:14px;font-weight:600;color:#fff}
 
 /* Banner slider */
-.banner-wrap{margin:10px 0 18px;position:relative;overflow:hidden;border-radius:14px}
+.banner-wrap{margin:10px 0 18px;position:relative;overflow:hidden;border-radius:14px;max-width:1100px;margin-left:auto;margin-right:auto}
 .banner-track{display:flex;transition:transform .5s ease}
-.banner-item{min-width:100%;height:140px;background:#2a0036;display:flex;align-items:center;justify-content:center;position:relative}
+.banner-item{min-width:100%;height:200px;background:#2a0036;display:flex;align-items:center;justify-content:center;position:relative}
 .banner-item img{width:100%;height:100%;object-fit:cover;display:block;border-radius:14px}
 .banner-dots{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:8px}
 .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.35);cursor:pointer}
 .dot.active{background:var(--accent-2);box-shadow:0 6px 18px rgba(0,0,0,0.5)}
 
 /* Game grid */
-.section-title{color:var(--accent);margin:12px 0 10px;font-size:18px}
+.section-title{color:var(--accent);margin:12px 0 10px;font-size:18px;text-align:left}
 .game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;padding-bottom:40px}
 .card-game{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:16px 12px;text-align:center;cursor:pointer;border:1px solid rgba(255,255,255,0.03);transition:transform .14s;box-shadow:0 8px 30px rgba(0,0,0,0.25) inset}
 .card-game:focus{outline:3px solid rgba(124,92,255,0.12)}
@@ -65,7 +66,7 @@ a{color:inherit;text-decoration:none}
 .sidebar a{color:#fff;text-decoration:none;padding:12px;border-radius:8px;background:rgba(255,255,255,0.02)}
 
 /* Top-up modal full page */
-.topup-page{position:fixed;inset:0;z-index:350;display:none;align-items:flex-start;justify-content:center;padding:18px;overflow:auto;background:rgba(0,0,0,0.55)}
+.topup-page{position:fixed;inset:0;z-index:450;display:none;align-items:flex-start;justify-content:center;padding:18px;overflow:auto;background:rgba(0,0,0,0.55)}
 .topup-page.show{display:flex}
 .topup-inner{width:100%;max-width:640px;background:linear-gradient(180deg,#1a0420,#240531);border-radius:16px;padding:14px;box-shadow:0 40px 120px rgba(0,0,0,0.7)}
 .topup-head{display:flex;align-items:center;gap:8px;justify-content:space-between}
@@ -106,6 +107,30 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
 .contact a{color:#8f73ff;display:block;margin-top:6px}
 .bottom{text-align:center;margin-top:20px;color:#a599cc}
 
+/* center popup (sukses/gagal) */
+.center-toast{
+  position:fixed; left:50%; top:50%; transform:translate(-50%,-50%) scale(.98); z-index:999;
+  min-width:280px; max-width:90%; padding:18px; border-radius:12px; display:none; align-items:center; gap:12px;
+  color:#060012; font-weight:700; backdrop-filter: blur(6px);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 40px rgba(var(--glow-c),0.12);
+  text-align:center;
+}
+.center-toast.show{display:flex;flex-direction:column;animation:popIn .22s ease forwards}
+.center-toast.success{background:linear-gradient(90deg, rgba(124,92,255,0.98), rgba(255,93,240,0.94)); color:#fff;}
+.center-toast.fail{background:linear-gradient(90deg, rgba(255,80,80,0.98), rgba(255,130,130,0.94)); color:#fff;}
+@keyframes popIn{ from { transform:translate(-50%,-50%) scale(.96); opacity:0 } to { transform:translate(-50%,-50%) scale(1); opacity:1 } }
+
+/* shake effect */
+.shake { animation: shakeX .36s ease; }
+@keyframes shakeX {
+  0% { transform: translate(-50%,-50%) translateX(0); }
+  20% { transform: translate(-50%,-50%) translateX(-8px); }
+  40% { transform: translate(-50%,-50%) translateX(8px); }
+  60% { transform: translate(-50%,-50%) translateX(-6px); }
+  80% { transform: translate(-50%,-50%) translateX(6px); }
+  100% { transform: translate(-50%,-50%) translateX(0); }
+}
+
 /* history panel */
 .panel-card{box-shadow:0 20px 60px rgba(0,0,0,0.6)}
 
@@ -118,7 +143,9 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
   .search{width:120px}
   .price-grid,.pay-grid{grid-template-columns:repeat(1,1fr)}
   .card-game img{width:60px;height:60px}
-  .banner-item{height:120px}
+  .banner-item{height:140px}
+  .topup-inner{margin:24px}
+  .center-toast{min-width:220px;padding:14px}
 }
 </style>
 </head>
@@ -157,7 +184,7 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
       <button id="promoBtn" class="promo-pill">PROMO: Diskon all 5% S&K berlaku</button>
     </div>
 
-    <!-- Banner slider (kosongan gambar, gampang diganti) -->
+    <!-- Banner slider (online images) -->
     <div class="banner-wrap" aria-hidden="false">
       <div id="bannerTrack" class="banner-track">
         <div class="banner-item"><img src="https://i.postimg.cc/0NmnVngs/banner.jpg" alt="Promo 1"></div>
@@ -248,6 +275,16 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
   </div>
 </div>
 
+<!-- center toasts -->
+<div id="toastSuccess" class="center-toast success" role="status" aria-live="polite">
+  <div style="font-size:28px">✅</div>
+  <div style="margin-top:6px">Transaksi Berhasil!</div>
+</div>
+<div id="toastFail" class="center-toast fail" role="alert" aria-live="assertive">
+  <div style="font-size:28px">❌</div>
+  <div style="margin-top:6px">Lengkapi data dulu!</div>
+</div>
+
 <!-- CONTACT / FOOTER -->
 <footer id="kontak" style="scroll-margin-top:90px">
   <div class="footer-grid" style="max-width:1100px;margin:0 auto;padding:30px 18px">
@@ -317,14 +354,14 @@ const PAYMENTS = [
   {id:"seabank",name:"Seabank",logo:"https://i.postimg.cc/15BpMzWz/images-11.jpg"},
 ];
 
-const CS_PHONE = "6288294179052"; // WA CS
+const CS_PHONE = "6288294179052"; // WA CS (converted to proper WA format)
 const HISTORY_KEY = "camelia_topup_history_v4";
 
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const formatRp = n => n.toLocaleString('id');
 
-/* ===== Banner slider implementation ===== */
+/* ===== Banner slider ===== */
 let bannerIdx = 0;
 let bannerTimer = null;
 function setupBanner(){
@@ -371,7 +408,6 @@ function renderGames(list = GAMES){
   // attach
   $$(".card-game").forEach(card=>{
     card.addEventListener("click", (e)=> {
-      // if click on internal 'Beli' handled separately, else open topup
       if(e.target && e.target.classList.contains('buy-inline')) return;
       openTopup(card.dataset.id);
     });
@@ -414,7 +450,6 @@ function showStep(n){
   $$(".tp-step").forEach(s=>s.classList.remove("active"));
   const el = $(`#tp-step-${n}`); if(el) el.classList.add("active");
   $$(".pstep").forEach(ps=> ps.classList.toggle("active", Number(ps.dataset.step) <= n));
-  // reset messages
   $("#orderMsg").textContent = "";
 }
 function openTopup(id){
@@ -434,7 +469,6 @@ function openTopup(id){
 function populateNominalSelect(){
   const sel = $("#nominalSelect");
   sel.innerHTML = `<option value="">-- Pilih nominal --</option>` + currentGame.prices.map(p=>`<option value="${p.code}" data-price="${p.price}" data-label="${p.label}">${p.label} — Rp ${formatRp(p.price)}</option>`).join('');
-  // reset button states
   $("#toStep3").disabled = true;
   $("#buyBtn").disabled = true;
   chosenPrice = null;
@@ -490,6 +524,23 @@ function renderHistory(){
     </div>`).join('') : "<div class='small' style='color:var(--muted)'>Belum ada transaksi.</div>";
 }
 
+/* ===== Toast helpers: success & fail (center) ===== */
+const toastSuccess = $("#toastSuccess");
+const toastFail = $("#toastFail");
+let toastTimer = null;
+function showToast(type){
+  clearTimeout(toastTimer);
+  const el = type === 'success' ? toastSuccess : toastFail;
+  const other = type === 'success' ? toastFail : toastSuccess;
+  other.classList.remove('show','shake');
+  el.classList.add('show','shake');
+  // vibrate on supported devices
+  if(navigator.vibrate) navigator.vibrate(120);
+  toastTimer = setTimeout(()=> {
+    el.classList.remove('show','shake');
+  }, 2000);
+}
+
 /* ===== Events wiring ===== */
 document.addEventListener("DOMContentLoaded", ()=>{
   renderGames();
@@ -502,13 +553,12 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
   // topup navigation
   $("#toStep2").addEventListener("click", ()=>{
-    if(!$("#playerInput").value.trim()){ alert("Masukkan Player ID terlebih dahulu."); return; }
+    if(!$("#playerInput").value.trim()){ showToast('fail'); return; }
     showStep(2);
   });
 
   // nominal select change
   $("#nominalSelect").addEventListener("change", function(){
-    const idx = this.selectedIndex;
     if(this.value === "") { chosenPrice = null; $("#toStep3").disabled = true; }
     else {
       const opt = this.options[this.selectedIndex];
@@ -519,23 +569,28 @@ document.addEventListener("DOMContentLoaded", ()=>{
   });
 
   $("#toStep3").addEventListener("click", ()=>{
-    if(!chosenPrice){ alert("Pilih nominal terlebih dahulu."); return; }
+    if(!chosenPrice){ showToast('fail'); return; }
     showStep(3);
   });
 
   // buy button -> open WA with prefilled message
   $("#buyBtn").addEventListener("click", ()=>{
     const player = $("#playerInput").value.trim();
-    if(!player || !chosenPrice || !chosenPayment){ alert("Lengkapi ID, nominal, dan metode pembayaran."); return; }
+    if(!player || !chosenPrice || !chosenPayment){ showToast('fail'); return; }
     const order = { id:'ORD'+Date.now(), game: currentGame.name, product: chosenPrice.label, amount: chosenPrice.price, player, method: chosenPayment, date: new Date().toLocaleString() };
     saveHistory(order);
+
+    // compose WA message as user requested
     const message = `Halo kak, saya mau top up:\nGame: ${order.game}\nID: ${order.player}\nNominal: ${order.product}\nMetode: ${order.method}`;
     const waUrl = `https://wa.me/${CS_PHONE}?text=${encodeURIComponent(message)}`;
-    // open WA and show short success msg
-    window.open(waUrl, "_blank");
-    $("#orderMsg").textContent = `✅ Mengarahkan ke WhatsApp CS...`;
-    $("#orderMsg").style.color = "#7cffb0";
-    setTimeout(()=> showTopup(false), 900);
+
+    // show success toast, then open WA
+    showToast('success');
+    // open WA after a short delay so user sees toast
+    setTimeout(()=> {
+      window.open(waUrl, "_blank");
+      showTopup(false);
+    }, 650);
   });
 
   $("#cancelTopup").addEventListener("click", ()=> showTopup(false));
