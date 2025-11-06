@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Petir Biru Store - Top Up (Final)</title>
+<title>Petir Biru Store - Top Up ⚡</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -12,24 +12,22 @@
   --accent-2:#7fe9ff; /* secondary lighter blue */
   --radius:14px;
   --glow-c: 0, 191, 255; /* blue glow RGB */
+  --pay-pink: #f3c1cf;
+  --pay-pink-2: #f08aa6;
 }
 /* reset / base */
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linear-gradient(180deg,var(--bg),#2a003f 60%);color:#fff;-webkit-font-smoothing:antialiased;position:relative;}
 
 /* ---------- LIGHTNING / GLOW BACKDROP ---------- */
-/* container sits above page background but below (or above) content.
-   z-index set high but pointer-events:none so it won't block clicks. */
 #lightning {
   pointer-events: none;
   position:fixed;
   inset:0;
-  z-index:1400; /* intentionally above most UI but non-interactive */
+  z-index:1400;
   overflow:hidden;
-  mix-blend-mode:screen; /* makes glow blend nicely with bg */
+  mix-blend-mode:screen;
 }
-
-/* soft drifting glow blobs (original, preserved) */
 .light-bolt {
   position:absolute;
   width:380px;
@@ -43,7 +41,6 @@ html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linea
 }
 .light-bolt.small{ width:220px;height:220px; filter: blur(30px); }
 .light-bolt.xsmall{ width:140px;height:140px; filter: blur(22px); }
-
 @keyframes boltPulse {
   0%   {opacity:0; transform:translateY(0px) scale(0.85);}
   10%  {opacity:0.18;}
@@ -51,15 +48,11 @@ html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linea
   90%  {opacity:0.12;}
   100% {opacity:0; transform:translateY(0px) scale(0.85);}
 }
-
-/* previous flash overlay (kept but we'll also use .strike for stronger flash) */
 #lightning .flash-overlay {
   position:absolute; inset:0; background: radial-gradient(circle at 50% 20%, rgba(255,255,255,0.18), rgba(0,191,255,0.06) 35%, transparent 55%);
   opacity:0; transition:opacity .12s ease;
   mix-blend-mode:screen;
 }
-
-/* small streak / linear bolt (kept for subtle effect) */
 .streak {
   position:absolute;
   width:4px;
@@ -74,57 +67,20 @@ html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linea
   opacity:0.95;
   transform: rotate(8deg) translateY(8px);
 }
-
-/* reduce intensity on small screens */
 @media (max-width:600px){
   .light-bolt{ display:block; width:140px;height:140px; filter: blur(22px); }
   .light-bolt.small{ display:none; }
   .streak{ display:none; }
 }
 
-/* ---------- NEW: REALISTIC SVG BOLT STYLES (dramatic) ---------- */
-/* container for generated SVG bolts */
-.bolt-svg {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-/* style for the bolt path */
-.bolt-path {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke: white; /* base color */
-  stroke-width: 2.6;
-  opacity: 0.0;
-  filter: drop-shadow(0 0 8px rgba(180,220,255,0.9)) blur(0.2px);
-  mix-blend-mode: screen;
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  transition: opacity .12s linear;
-}
-
-/* animated draw */
-@keyframes bolt-draw {
-  0% { stroke-dashoffset: 1000; opacity: 1; }
-  40% { stroke-dashoffset: 200; opacity: 1; }
-  70% { stroke-dashoffset: 80; opacity: 0.8; }
-  100% { stroke-dashoffset: 0; opacity: 0; }
-}
-
-/* full-screen flash for dramatic look */
+/* ---------- SVG bolts ---------- */
+.bolt-svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; }
+.bolt-path { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke: white; stroke-width: 2.6; opacity: 0.0; filter: drop-shadow(0 0 8px rgba(180,220,255,0.9)) blur(0.2px); mix-blend-mode: screen; stroke-dasharray: 1000; stroke-dashoffset: 1000; transition: opacity .12s linear; }
+@keyframes bolt-draw { 0% { stroke-dashoffset: 1000; opacity: 1; } 40% { stroke-dashoffset: 200; opacity: 1; } 70% { stroke-dashoffset: 80; opacity: 0.8; } 100% { stroke-dashoffset: 0; opacity: 0; } }
 #lightning.strike::before {
-  content: "";
-  position: absolute;
-  inset: 0;
+  content: ""; position: absolute; inset: 0;
   background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.85), rgba(127,233,255,0.12) 45%, rgba(50,160,255,0.02) 70%, transparent 85%);
-  mix-blend-mode: screen;
-  pointer-events: none;
-  animation: strikeFlash .18s ease-out;
+  mix-blend-mode: screen; pointer-events: none; animation: strikeFlash .18s ease-out;
 }
 @keyframes strikeFlash {
   0% { opacity: 0; transform: scale(1); }
@@ -132,26 +88,10 @@ html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linea
   40% { opacity: 0.45; transform: scale(1.01); }
   100% { opacity: 0; transform: scale(1); }
 }
-
-/* subtle trailing glow for bolt (thin outer glow stroke) */
-.bolt-path-glow {
-  fill: none;
-  stroke: rgba(127,233,255,0.85);
-  stroke-width: 6;
-  filter: blur(6px);
-  opacity: 0;
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-}
-
-/* small responsive tweaks */
-@media (max-width:600px){
-  .bolt-path { stroke-width: 1.8; }
-  .bolt-path-glow { stroke-width: 4; }
-}
+.bolt-path-glow { fill: none; stroke: rgba(127,233,255,0.85); stroke-width: 6; filter: blur(6px); opacity: 0; stroke-dasharray: 1000; stroke-dashoffset: 1000; }
+@media (max-width:600px){ .bolt-path { stroke-width: 1.8; } .bolt-path-glow { stroke-width: 4; } }
 
 /* ---------- UI / rest of site (unchanged, preserved) ---------- */
-
 /* Header */
 .header{
   position:sticky;top:0;z-index:120;padding:10px 14px;display:flex;align-items:center;gap:12px;
@@ -166,16 +106,12 @@ html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linea
 .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
 .btn-primary{background:linear-gradient(90deg,var(--accent-2),#6fefff);border:none;padding:10px 14px;border-radius:12px;color:#002;cursor:pointer;box-shadow:0 8px 24px rgba(0,191,255,0.12)}
 .btn-primary:active{transform:translateY(1px)}
-
-/* Layout */
 .container{max-width:1100px;margin:18px auto;padding:0 16px}
 .hero{padding:22px 0;text-align:center}
 .hero h1{margin:0;font-size:28px;color:var(--accent-2)}
 .hero p{color:var(--muted);margin:10px 0 16px;line-height:1.55}
 .hero-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
 .promo-pill{background:linear-gradient(90deg,#28d4ff,#9beeff);padding:10px 14px;border-radius:14px;font-weight:600;color:#001}
-
-/* Banner slider */
 .banner-wrap{margin:10px 0 18px;position:relative;overflow:hidden;border-radius:14px;max-width:1100px;margin-left:auto;margin-right:auto}
 .banner-track{display:flex;transition:transform .5s ease}
 .banner-item{min-width:100%;height:200px;background:#002b44;display:flex;align-items:center;justify-content:center;position:relative}
@@ -183,8 +119,6 @@ html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linea
 .banner-dots{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:8px}
 .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.35);cursor:pointer}
 .dot.active{background:var(--accent-2);box-shadow:0 6px 18px rgba(0,0,0,0.5)}
-
-/* Game grid */
 .section-title{color:var(--accent);margin:12px 0 10px;font-size:18px;text-align:left}
 .game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;padding-bottom:40px}
 .card-game{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:16px 12px;text-align:center;cursor:pointer;border:1px solid rgba(255,255,255,0.03);transition:transform .14s;box-shadow:0 8px 30px rgba(0,0,0,0.25) inset}
@@ -192,8 +126,6 @@ html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linea
 .card-game:hover{transform:translateY(-6px)}
 .card-game img{width:72px;height:72px;border-radius:12px;object-fit:cover;margin:8px auto}
 .gname{font-weight:700;margin-top:6px}
-
-/* Sidebar & overlay */
 .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:300;display:none;transition:opacity .22s}
 .sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:linear-gradient(180deg,#001428,#00243a);padding:18px;transform:translateX(-320px);transition:transform .28s ease;z-index:320;border-right:1px solid rgba(255,255,255,0.02)}
 .sidebar.open{transform:translateX(0)}
@@ -201,11 +133,9 @@ html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linea
 .sidebar .close-btn button{background:none;border:none;color:#fff;font-size:22px;cursor:pointer}
 .sidebar nav{margin-top:12px;display:flex;flex-direction:column;gap:10px}
 .sidebar a{color:#fff;text-decoration:none;padding:12px;border-radius:8px;background:rgba(255,255,255,0.02)}
-
-/* Top-up modal full page */
 .topup-page{position:fixed;inset:0;z-index:450;display:none;align-items:flex-start;justify-content:center;padding:18px;overflow:auto;background:rgba(0,0,0,0.55)}
 .topup-page.show{display:flex}
-.topup-inner{width:100%;max-width:640px;background:linear-gradient(180deg,#00101a,#002033);border-radius:16px;padding:14px;box-shadow:0 40px 120px rgba(0,0,0,0.7)}
+.topup-inner{width:100%;max-width:740px;background:linear-gradient(180deg,#00101a,#002033);border-radius:16px;padding:14px;box-shadow:0 40px 120px rgba(0,0,0,0.7)}
 .topup-head{display:flex;align-items:center;gap:8px;justify-content:space-between}
 .topup-title{font-weight:700}
 .topup-body{margin-top:8px}
@@ -219,8 +149,6 @@ html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linea
 .tp-step.active{display:block}
 .input, select{width:100%;padding:12px;border-radius:12px;border:2px solid rgba(255,255,255,0.03);background:rgba(0,0,0,0.12);color:#fff;outline:none}
 .row{display:flex;gap:10px;margin-top:12px;align-items:center}
-
-/* price & pay grids */
 .price-grid,.pay-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
 .price-item{background:#002b44;border-radius:12px;padding:12px;cursor:pointer;border:1px solid rgba(255,255,255,0.03);transition:all .16s}
 .price-item .label{font-weight:700}
@@ -232,10 +160,7 @@ html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:linea
 .pay-item .pname{font-weight:600}
 .pay-item:hover{transform:translateY(-4px)}
 .pay-item.active{background:#fff;color:#150018;box-shadow:0 10px 30px rgba(0,0,0,0.45)}
-
 .small{font-size:13px;color:var(--muted)}
-
-/* footer */
 footer{background:#00101a;padding:36px 18px;margin-top:30px}
 .footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
 footer h3{color:var(--accent-2);margin-bottom:8px}
@@ -243,8 +168,6 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
 .pay-logos img{width:48px;border-radius:6px;background:#fff;padding:4px}
 .contact a{color:#66d1ff;display:block;margin-top:6px}
 .bottom{text-align:center;margin-top:20px;color:#a599cc}
-
-/* center popup (sukses/gagal) */
 .center-toast{
   position:fixed; left:50%; top:50%; transform:translate(-50%,-50%) scale(.98); z-index:999;
   min-width:280px; max-width:90%; padding:18px; border-radius:12px; display:none; align-items:center; gap:12px;
@@ -256,8 +179,6 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
 .center-toast.success{background:linear-gradient(90deg, rgba(127,233,255,0.98), rgba(127,233,255,0.94)); color:#fff;}
 .center-toast.fail{background:linear-gradient(90deg, rgba(255,80,80,0.98), rgba(255,130,130,0.94)); color:#fff;}
 @keyframes popIn{ from { transform:translate(-50%,-50%) scale(.96); opacity:0 } to { transform:translate(-50%,-50%) scale(1); opacity:1 } }
-
-/* shake effect */
 .shake { animation: shakeX .36s ease; }
 @keyframes shakeX {
   0% { transform: translate(-50%,-50%) translateX(0); }
@@ -267,8 +188,6 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
   80% { transform: translate(-50%,-50%) translateX(6px); }
   100% { transform: translate(-50%,-50%) translateX(0); }
 }
-
-/* music control (floating) */
 .music-control{
   position:fixed; right:18px; bottom:18px; z-index:1100; display:flex; gap:8px; align-items:center;
   background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
@@ -278,23 +197,159 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
   width:42px;height:42px;border-radius:10px;border:none;background:transparent;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;
 }
 .music-label{font-size:12px;color:var(--muted);padding-right:6px}
-
-/* history panel */
 .panel-card{box-shadow:0 20px 60px rgba(0,0,0,0.6)}
-
-/* utility */
 .hide{display:none}
 .no-scroll{overflow:hidden}
 
-/* responsive */
+/* === Roblox Panel (Dark Blue Glow Version) === */
+.roblox-panel {
+  background: linear-gradient(180deg, #001628, #002b44 60%, #001d33);
+  color: #d7eaff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 0 25px rgba(0, 191, 255, 0.25), 0 0 60px rgba(0, 191, 255, 0.08) inset;
+  border: 1px solid rgba(0, 191, 255, 0.15);
+  backdrop-filter: blur(4px);
+}
+.roblox-panel h3 {
+  color: #7fe9ff;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.roblox-input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(127, 233, 255, 0.25);
+  background: rgba(255, 255, 255, 0.03);
+  color: #eaf9ff;
+  outline: none;
+  margin-top: 8px;
+  transition: all .2s;
+}
+.roblox-input:focus {
+  border-color: #33ccff;
+  box-shadow: 0 0 8px rgba(0,191,255,0.3);
+}
+.roblox-note {
+  background: linear-gradient(180deg, rgba(0,191,255,0.08), rgba(0,191,255,0.04));
+  border: 1px solid rgba(0,191,255,0.1);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #a8e8ff;
+  font-size: 13px;
+  margin-top: 10px;
+  box-shadow: 0 0 18px rgba(0,191,255,0.08) inset;
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.product-card {
+  background: linear-gradient(180deg, #002b44, #001f33);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid rgba(127, 233, 255, 0.1);
+  transition: all .16s ease;
+  box-shadow: 0 0 14px rgba(0,191,255,0.05) inset;
+}
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(0,191,255,0.25);
+  border-color: rgba(127,233,255,0.4);
+}
+.product-card.active {
+  background: linear-gradient(90deg, #007fff, #00bfff);
+  color: #fff;
+  border-color: rgba(127,233,255,0.8);
+  box-shadow: 0 0 30px rgba(0,191,255,0.4);
+}
+.product-price {
+  font-weight: 800;
+  margin-top: 6px;
+  font-size: 15px;
+}
+.product-label {
+  font-size: 13px;
+  color: #b7eaff;
+  margin-top: 4px;
+}
+.roblox-bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1200;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, rgba(0, 20, 40, 0.97), rgba(0, 40, 80, 0.97));
+  border-top: 1px solid rgba(0,191,255,0.2);
+  box-shadow: 0 -4px 30px rgba(0,191,255,0.15);
+  backdrop-filter: blur(6px);
+}
+.roblox-bottom-left {
+  font-size: 14px;
+  color: #a8e8ff;
+}
+.roblox-bottom-left #rbTotal {
+  font-weight: 800;
+  font-size: 18px;
+  color: #7fe9ff;
+  text-shadow: 0 0 8px rgba(0,191,255,0.4);
+}
+.roblox-buy-btn {
+  background: linear-gradient(90deg, #00bfff, #33ffff);
+  border: none;
+  color: #001018;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(0,191,255,0.45);
+  transition: all .2s ease;
+}
+.roblox-buy-btn:hover {
+  box-shadow: 0 0 25px rgba(0,191,255,0.8), 0 0 40px rgba(0,191,255,0.2);
+  transform: translateY(-2px);
+}
+.roblox-buy-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+#rbCancel {
+  color: #7fe9ff;
+  border: 1px solid rgba(0,191,255,0.3);
+  background: transparent;
+  border-radius: 10px;
+  padding: 10px 14px;
+  transition: all .2s;
+}
+#rbCancel:hover {
+  background: rgba(0,191,255,0.1);
+  box-shadow: 0 0 10px rgba(0,191,255,0.25);
+}
+@media (max-width:600px){
+  .product-grid{ grid-template-columns:repeat(2,1fr); }
+  .roblox-bottom-bar{flex-direction:column;align-items:flex-start;gap:8px;}
+}
+
+/* responsive tweaks */
 @media (max-width:600px){
   .search{width:120px}
   .price-grid,.pay-grid{grid-template-columns:repeat(1,1fr)}
   .card-game img{width:60px;height:60px}
   .banner-item{height:140px}
-  .topup-inner{margin:24px}
+  .topup-inner{margin:24px;max-width:420px}
   .center-toast{min-width:220px;padding:14px}
   .music-control{right:12px;bottom:12px}
+  .product-grid{ grid-template-columns:repeat(2,1fr); }
 }
 </style>
 </head>
@@ -302,35 +357,26 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
 
 <!-- LIGHTNING / GLOW LAYER (visual only, no sound) -->
 <div id="lightning" aria-hidden="true">
-  <!-- multiple glows (preserved) -->
   <div class="light-bolt" data-pos="1" style="animation-duration:9s; animation-delay:0s"></div>
   <div class="light-bolt small" data-pos="2" style="animation-duration:11s; animation-delay:1.5s"></div>
   <div class="light-bolt" data-pos="3" style="animation-duration:10s; animation-delay:3s"></div>
   <div class="light-bolt small" data-pos="4" style="animation-duration:12s; animation-delay:5s"></div>
   <div class="light-bolt xsmall" data-pos="5" style="animation-duration:8s; animation-delay:2s"></div>
-
-  <!-- subtle flash overlay for strikes -->
   <div class="flash-overlay"></div>
-
-  <!-- linear streaks that appear during strike -->
   <div class="streak" style="left:22%; top:6%; height:160px;"></div>
   <div class="streak" style="left:68%; top:10%; height:180px; transform: rotate(-6deg) translateY(-20px)"></div>
-
-  <!-- container where JS will append SVG bolts -->
   <div class="bolt-svg" id="boltSvgContainer" aria-hidden="true"></div>
 </div>
 
 <header class="header">
   <button id="menuBtn" class="menu-btn" aria-label="Buka menu">☰</button>
   <div class="brand"><span class="gem">💎</span> Petir Biru Store</div>
-
   <div class="header-right" style="margin-left:auto">
     <input id="searchInput" class="search" placeholder="Cari game (Roblox, FF...)" />
     <button id="historyBtn" class="btn-ghost">Riwayat</button>
   </div>
 </header>
 
-<!-- sidebar & overlay -->
 <div id="overlay" class="sidebar-overlay" aria-hidden="true"></div>
 <aside id="sidebar" class="sidebar" aria-hidden="true" role="menu">
   <div class="close-btn"><button id="closeSidebar" aria-label="Tutup menu">✕</button></div>
@@ -344,7 +390,6 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
 </aside>
 
 <main class="container" id="mainContent">
-  <!-- HERO -->
   <section id="home" class="hero" tabindex="-1">
     <h1>Petir Biru Store</h1>
     <p>Platform top-up cepat & aman untuk semua kalangan — dari pemain muda sampai dewasa. Harga bersahabat, proses instan max 1x24 jam, dan dukungan CS siap membantu.</p>
@@ -352,8 +397,6 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
       <button id="allGamesBtn" class="btn-primary">Lihat Semua Game</button>
       <button id="promoBtn" class="promo-pill">PROMO: Diskon all 5% S&K berlaku</button>
     </div>
-
-    <!-- Banner slider (online images) -->
     <div class="banner-wrap" aria-hidden="false">
       <div id="bannerTrack" class="banner-track">
         <div class="banner-item"><img src="aset/banner1.jpg" alt="Promo 1"></div>
@@ -364,19 +407,16 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
     </div>
   </section>
 
-  <!-- GAMES -->
   <section id="games" class="game-section">
     <h3 class="section-title">Game Populer</h3>
     <div id="gameList" class="game-grid" aria-live="polite"></div>
   </section>
 
-  <!-- PROMO SECTION -->
   <section id="promo" style="padding:18px 0">
     <h3 style="color:var(--accent-2)">Promo Terbaru</h3>
     <p class="small" style="max-width:780px">Ikuti channel PB Store dan ajak teman untuk mendapatkan promo 5% cashback pada pembelian pertama yang memenuhi syarat.</p>
   </section>
 
-  <!-- PANDUAN -->
   <section id="panduan" style="padding:18px 0">
     <h3 style="color:var(--accent-2)">Panduan Singkat</h3>
     <ol class="small" style="max-width:780px; color:var(--muted); margin-top:8px; line-height:1.6">
@@ -387,64 +427,68 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
   </section>
 </main>
 
-<!-- topup modal (step flow) -->
+<!-- topup modal (shared) -->
 <div id="topupPage" class="topup-page" aria-hidden="true">
-  <div class="topup-inner" role="dialog" aria-modal="true" aria-labelledby="topupTitle">
+  <div id="topupInner" class="topup-inner" role="dialog" aria-modal="true" aria-labelledby="topupTitle">
     <div class="topup-head">
       <button id="closeTopup" class="btn-ghost" aria-label="Kembali">←</button>
       <div id="topupTitle" class="topup-title">Top Up</div>
       <div style="width:36px"></div>
     </div>
 
-    <div class="topup-body">
-      <div class="progress">
-        <div class="progress-line"></div>
-        <div class="progress-steps">
-          <div class="pstep active" data-step="1">1</div>
-          <div class="pstep" data-step="2">2</div>
-          <div class="pstep" data-step="3">3</div>
-        </div>
-      </div>
-
-      <!-- Step 1 -->
-      <div id="tp-step-1" class="tp-step active">
-        <div class="card">
-          <h3>1️⃣ Masukkan Player ID</h3>
-          <input id="playerInput" class="input" placeholder="Masukkan ID / Username" autocomplete="off">
-          <div class="row"><button id="toStep2" class="btn-primary full">Lanjut ke Nominal</button></div>
-        </div>
-      </div>
-
-      <!-- Step 2 (DROPDOWN nominal) -->
-      <div id="tp-step-2" class="tp-step">
-        <div class="card">
-          <h3>2️⃣ Pilih Nominal</h3>
-          <label for="nominalSelect" class="small" style="color:var(--muted)">Pilih paket/top-up</label>
-          <select id="nominalSelect" class="input" aria-label="Pilih nominal">
-            <option value="">-- Pilih nominal --</option>
-          </select>
-          <div class="row"><button id="toStep3" class="btn-primary full" disabled>Lanjut ke Pembayaran</button></div>
-        </div>
-      </div>
-
-      <!-- Step 3 (metode pembayaran) -->
-      <div id="tp-step-3" class="tp-step">
-        <div class="card">
-          <h3>3️⃣ Pilih Pembayaran</h3>
-          <div id="payGrid" class="pay-grid"></div>
-          <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
-            <button id="buyBtn" class="btn-primary full" disabled>Beli Sekarang (WA)</button>
-            <button id="cancelTopup" class="btn-ghost full">Batal</button>
+    <div id="topupBody" class="topup-body">
+      <!-- default original flow (kept) -->
+      <div id="defaultFlow">
+        <div class="progress">
+          <div class="progress-line"></div>
+          <div class="progress-steps">
+            <div class="pstep active" data-step="1">1</div>
+            <div class="pstep" data-step="2">2</div>
+            <div class="pstep" data-step="3">3</div>
           </div>
         </div>
-      </div>
 
-      <div id="orderMsg" class="small" aria-live="polite"></div>
+        <!-- Step 1 -->
+        <div id="tp-step-1" class="tp-step active">
+          <div class="card">
+            <h3>1️⃣ Masukkan Player ID</h3>
+            <input id="playerInput" class="input" placeholder="Masukkan ID / Username" autocomplete="off">
+            <div class="row"><button id="toStep2" class="btn-primary full">Lanjut ke Nominal</button></div>
+          </div>
+        </div>
+
+        <!-- Step 2 (DROPDOWN nominal) -->
+        <div id="tp-step-2" class="tp-step">
+          <div class="card">
+            <h3>2️⃣ Pilih Nominal</h3>
+            <label for="nominalSelect" class="small" style="color:var(--muted)">Pilih paket/top-up</label>
+            <select id="nominalSelect" class="input" aria-label="Pilih nominal">
+              <option value="">-- Pilih nominal --</option>
+            </select>
+            <div class="row"><button id="toStep3" class="btn-primary full" disabled>Lanjut ke Pembayaran</button></div>
+          </div>
+        </div>
+
+        <!-- Step 3 (metode pagamento) -->
+        <div id="tp-step-3" class="tp-step">
+          <div class="card">
+            <h3>3️⃣ Pilih Pembayaran</h3>
+            <div id="payGrid" class="pay-grid"></div>
+            <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+              <button id="buyBtn" class="btn-primary full" disabled>Beli Sekarang (WA)</button>
+              <button id="cancelTopup" class="btn-ghost full">Batal</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="orderMsg" class="small" aria-live="polite"></div>
+      </div>
+      <!-- roblox panel will be injected dynamically into #robloxFlow -->
+      <div id="robloxFlow" class="hide"></div>
     </div>
   </div>
 </div>
 
-<!-- center toasts -->
 <div id="toastSuccess" class="center-toast success" role="status" aria-live="polite">
   <div style="font-size:28px">✅</div>
   <div style="margin-top:6px">Transaksi Berhasil!</div>
@@ -454,7 +498,6 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
   <div style="margin-top:6px">Lengkapi data dulu!</div>
 </div>
 
-<!-- CONTACT / FOOTER -->
 <footer id="kontak" style="scroll-margin-top:90px">
   <div class="footer-grid" style="max-width:1100px;margin:0 auto;padding:30px 18px">
     <div>
@@ -493,7 +536,6 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
   <div class="bottom">© 2025 Petir Biru Store • All rights reserved</div>
 </footer>
 
-<!-- HISTORY PANEL -->
 <div id="historyPanel" class="sidebar-overlay hide" style="align-items:flex-end">
   <div class="panel-card" style="width:100%;max-width:720px;background:linear-gradient(180deg,#0f0b1a,#171029);border-radius:12px;padding:14px;margin:12px">
     <button id="closeHistory" class="close-btn" style="float:right;background:none;border:none;color:#fff;font-size:20px">✕</button>
@@ -503,7 +545,6 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
   </div>
 </div>
 
-<!-- MUSIC CONTROL (floating) -->
 <div class="music-control" id="musicControl" aria-hidden="false" title="Kontrol musik">
   <div class="music-label" id="musicLabel">Musik: On</div>
   <button class="music-btn" id="musicToggle" aria-label="Play/Pause">⏯</button>
@@ -514,41 +555,35 @@ footer h3{color:var(--accent-2);margin-bottom:8px}
 /* ===== Data & util ===== */
 const GAMES = [
   {id:"roblox", name:"Roblox", img:"aset/roblox.jpeg", prices:[
-    {code:"R-80", label:"80 Robux", price:10000},
+    {code:"R-80", label:"80 Robux", price:12500},
     {code:"R-400", label:"400 Robux", price:50000},
     {code:"R-800", label:"800 Robux", price:100000}
   ]},
-  
   {id:"ff", name:"Free Fire", img:"aset/ff.jpeg", prices:[
     {code:"FF-50", label:"50 Diamonds", price:10000},
     {code:"FF-140", label:"140 Diamonds", price:20000},
     {code:"FF-370", label:"370 Diamonds", price:50000}
   ]},
-  
   {id:"pubg", name:"PUBG Mobile", img:"aset/pubg.jpeg", prices:[
     {code:"P-60", label:"60 UC", price:10000},
     {code:"P-300", label:"300 UC", price:50000},
     {code:"P-600", label:"600 UC", price:100000}
   ]},
-  
   {id:"undawn", name:"Undawn", img:"aset/undawn.jpeg", prices:[
     {code:"U-100", label:"100 Gold", price:10000},
     {code:"U-500", label:"500 Gold", price:50000},
     {code:"U-1000", label:"1000 Gold", price:100000}
   ]},
-  
   {id:"ml", name:"Mobile Legends", img:"aset/ml.jpeg", prices:[
     {code:"ML-86", label:"86 Diamonds", price:10000},
     {code:"ML-170", label:"170 Diamonds", price:20000},
     {code:"ML-514", label:"514 Diamonds", price:50000}
   ]},
-  
   {id:"zepeto", name:"Zepeto", img:"aset/zepeto.jpeg", prices:[
     {code:"Z-10K", label:"10.000 Coin", price:10000},
     {code:"Z-50K", label:"50.000 Coin", price:50000},
     {code:"Z-100K", label:"100.000 Coin", price:100000}
   ]},
-  
   {id:"genshin", name:"Genshin Impact", img:"aset/genshin.jpeg", prices:[
     {code:"GI-60", label:"60 Genesis", price:10000},
     {code:"GI-330", label:"330 Genesis", price:50000},
@@ -616,7 +651,6 @@ function renderGames(list = GAMES){
       <div class="small" style="color:var(--muted)">Top-up cepat & aman</div>
       <div style="margin-top:12px"><button class="btn-primary buy-inline" data-id="${g.id}">Beli</button></div>
     </div>`).join('');
-  // attach
   $$(".card-game").forEach(card=>{
     card.addEventListener("click", (e)=> {
       if(e.target && e.target.classList.contains('buy-inline')) return;
@@ -650,7 +684,7 @@ $$(".side-link").forEach(a=>{
   a.addEventListener("click",(e)=>{ e.preventDefault(); const target = a.dataset.target; if(target){ const el = document.getElementById(target); if(el) el.scrollIntoView({behavior:"smooth", block:"start"}); } closeSidebar();});
 });
 
-/* ===== Top-up modal (flow) ===== */
+/* ===== Top-up modal helpers ===== */
 function showTopup(show){
   const tp = $("#topupPage");
   tp.classList.toggle("show", !!show);
@@ -663,20 +697,249 @@ function showStep(n){
   $$(".pstep").forEach(ps=> ps.classList.toggle("active", Number(ps.dataset.step) <= n));
   $("#orderMsg").textContent = "";
 }
-function openTopup(id){
-  currentGame = GAMES.find(g=>g.id===id);
-  if(!currentGame){ alert("Game tidak ditemukan"); return; }
-  $("#topupTitle").textContent = `${currentGame.name} • Pilih nominal & metode`;
-  chosenPrice = null; chosenPayment = null;
-  $("#playerInput").value = "";
-  $("#orderMsg").textContent = "";
-  populateNominalSelect();
-  renderPayGrid();
-  showTopup(true);
-  showStep(1);
+
+/* ===== ROBLOX special panel rendering ===== */
+function renderRobloxPanel(){
+  const robloxFlow = $("#robloxFlow");
+  // build html
+  const html = `
+    <div class="roblox-panel" id="robloxPanelInner">
+      <h3>1 Data Akun</h3>
+      <label class="small">@Username / LINK GP</label>
+      <input id="rb_username" class="roblox-input" placeholder="@username / link akun">
+      <label class="small" style="margin-top:10px">Password (Khusus Robux Vilog)</label>
+      <input id="rb_password" class="roblox-input" placeholder="Kosongkan jika tak perlu">
+      <label class="small" style="margin-top:10px">Isi 3 Code Backup (Jika Ada / kosongin aja)</label>
+      <input id="rb_codes" class="roblox-input" placeholder="Code1, Code2, Code3">
+      <div class="roblox-note">
+        <strong>Klo kaga tau tanya dlu nanti mendingan ya</strong>
+        <ol style="margin:8px 0 0 16px; color:#b388f">
+          <li>Buat link tutor dm bae dah ke wa admin yak</li>
+          <li>Masukan id akun sama pw klo vilog ya (via login buat yg kaga tau)</li>
+          <li>Ga perlu isi kolam password & codee buat robux gempas</li>
+          <li>Regional pricenya matiin (WAJIB)</li>
+          <li>Proses pending 2x24j Robux auto masuk 1-6 day</li>
+          <li>Stok abis auto nanti di kasi tau pas cek ot</li>
+        </ol>
+      </div>
+
+      <h3 style="margin-top:14px">2 Pilih dulu nih cok</h3>
+      <div class="product-grid" id="rbProductGrid"></div>
+    </div>
+  `;
+  robloxFlow.innerHTML = html;
+  robloxFlow.classList.remove('hide');
+
+  // populate products from currentGame.prices
+  const grid = $("#rbProductGrid");
+  grid.innerHTML = currentGame.prices.map((p, idx)=>`
+    <div class="product-card" data-idx="${idx}" data-code="${p.code}" data-price="${p.price}">
+      <div style="height:36px"><img src="${currentGame.img}" alt="${currentGame.name}" style="height:36px;border-radius:6px"></div>
+      <div class="product-price">Rp ${formatRp(p.price)}</div>
+      <div class="product-label">${p.label}</div>
+    </div>
+  `).join('');
+
+  // attach selection handlers
+  $$(".product-card").forEach(pc=>{
+    pc.addEventListener("click", ()=>{
+      $$(".product-card").forEach(x=>x.classList.remove("active"));
+      pc.classList.add("active");
+      const price = Number(pc.dataset.price);
+      chosenPrice = { code: pc.dataset.code, price, label: pc.querySelector('.product-label').textContent };
+      updateRobloxBottom();
+    });
+  });
+
+  // create bottom bar
+  createRobloxBottom();
+  // hook inputs to enable buy when username + product selected
+  $("#rb_username").addEventListener("input", updateRobloxBottom);
+  $("#rb_password").addEventListener("input", updateRobloxBottom);
+  $("#rb_codes").addEventListener("input", updateRobloxBottom);
 }
 
-// populate nominal select with currentGame prices
+let robloxBottomEl = null;
+function createRobloxBottom(){
+  // if exists remove
+  if(robloxBottomEl) { robloxBottomEl.remove(); robloxBottomEl = null; }
+  // create bar
+  const bar = document.createElement('div');
+  bar.className = 'roblox-bottom-bar';
+  bar.id = 'robloxBottom';
+  bar.innerHTML = `
+    <div class="roblox-bottom-left">
+      <div style="font-size:12px;opacity:.9">Total</div>
+      <div id="rbTotal" style="font-weight:800;font-size:18px">Rp 0</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button id="rbCancel" class="btn-ghost" style="background:transparent;border-radius:10px;padding:10px 12px">Batal</button>
+      <button id="rbBuy" class="roblox-buy-btn" disabled>Beli Sekarang</button>
+    </div>
+  `;
+  document.body.appendChild(bar);
+  robloxBottomEl = bar;
+  // events
+  $("#rbCancel").addEventListener("click", ()=> {
+    // hide panel and remove bottom
+    closeRobloxPanel();
+  });
+  $("#rbBuy").addEventListener("click", robloxBuyAction);
+  updateRobloxBottom();
+}
+
+function updateRobloxBottom(){
+  const username = $("#rb_username") ? $("#rb_username").value.trim() : "";
+  const price = chosenPrice ? chosenPrice.price : 0;
+  $("#rbTotal").textContent = `Rp ${formatRp(price)}`;
+  const buyBtn = $("#rbBuy");
+  // enable only if username present and product selected
+  if(buyBtn){
+    buyBtn.disabled = !(username.length>0 && chosenPrice);
+  }
+}
+
+function closeRobloxPanel(){
+  // hide flow, remove bottom bar
+  const robloxFlow = $("#robloxFlow");
+  if(robloxFlow) { robloxFlow.classList.add('hide'); robloxFlow.innerHTML = ""; }
+  if(robloxBottomEl){ robloxBottomEl.remove(); robloxBottomEl = null; }
+  chosenPrice = null;
+  showTopup(false);
+}
+
+/* roblox buy handler */
+function robloxBuyAction(){
+  const username = $("#rb_username").value.trim();
+  if(!username || !chosenPrice){ showToast('fail'); return; }
+  const password = $("#rb_password").value.trim();
+  const codes = $("#rb_codes").value.trim();
+
+  const order = { id:'ORD'+Date.now(), game: currentGame.name, product: chosenPrice.label, amount: chosenPrice.price, player: username, method: 'WA', date: new Date().toLocaleString() };
+  saveHistory(order);
+
+  // compose WA message with extra fields
+  let message = `Halo kak, saya mau top up:\nGame: ${order.game}\nID / Link: ${username}\nNominal: ${order.product}\nTotal: Rp ${formatRp(order.amount)}`;
+  if(password) message += `\nPassword: ${password}`;
+  if(codes) message += `\nCodes: ${codes}`;
+  message += `\n\nMohon diproses ya kak.`;
+
+  const waUrl = `https://wa.me/${CS_PHONE}?text=${encodeURIComponent(message)}`;
+  showToast('success');
+  setTimeout(()=> {
+    window.open(waUrl, "_blank");
+    // cleanup
+    closeRobloxPanel();
+  }, 650);
+}
+
+/* ===== MOBILE LEGENDS PANEL (ADDED) =====
+   - Matches style of Roblox panel
+   - Fields: ID + Server ID (no password / codes)
+   - Sends WA with ID + Server + nominal + total
+*/
+let mlBottomEl = null;
+function renderMLPanel(){
+  const robloxFlow = $("#robloxFlow"); // reuse injection area
+  const html = `
+    <div class="roblox-panel" id="mlPanelInner">
+      <h3>1 Data Akun</h3>
+      <label class="small">ID</label>
+      <input id="ml_id" class="roblox-input" placeholder="Masukkan ID Mobile Legends">
+      <label class="small" style="margin-top:10px">Server ID</label>
+      <input id="ml_server" class="roblox-input" placeholder="Contoh: 1234 (Server)">
+      <div class="roblox-note">Pastikan ID & Server benar agar tidak salah kirim.</div>
+      <h3 style="margin-top:14px">2 Pilih Produk</h3>
+      <div class="product-grid" id="mlProductGrid"></div>
+    </div>
+  `;
+  robloxFlow.innerHTML = html;
+  robloxFlow.classList.remove('hide');
+
+  // populate products
+  const grid = $("#mlProductGrid");
+  grid.innerHTML = currentGame.prices.map((p, idx)=>`
+    <div class="product-card" data-idx="${idx}" data-code="${p.code}" data-price="${p.price}">
+      <div style="height:36px"><img src="${currentGame.img}" alt="${currentGame.name}" style="height:36px;border-radius:6px"></div>
+      <div class="product-price">Rp ${formatRp(p.price)}</div>
+      <div class="product-label">${p.label}</div>
+    </div>
+  `).join('');
+
+  // selection handlers
+  $$(".product-card").forEach(pc=>{
+    pc.addEventListener("click", ()=>{
+      $$(".product-card").forEach(x=>x.classList.remove("active"));
+      pc.classList.add("active");
+      const price = Number(pc.dataset.price);
+      chosenPrice = { code: pc.dataset.code, price, label: pc.querySelector('.product-label').textContent };
+      updateMLBottom();
+    });
+  });
+
+  createMLBottom();
+  // hook inputs
+  const idEl = $("#ml_id"), serverEl = $("#ml_server");
+  if(idEl) idEl.addEventListener("input", updateMLBottom);
+  if(serverEl) serverEl.addEventListener("input", updateMLBottom);
+}
+
+function createMLBottom(){
+  if(mlBottomEl) { mlBottomEl.remove(); mlBottomEl = null; }
+  const bar = document.createElement('div');
+  bar.className = 'roblox-bottom-bar';
+  bar.id = 'mlBottom';
+  bar.innerHTML = `
+    <div class="roblox-bottom-left">
+      <div style="font-size:12px;opacity:.9">Total</div>
+      <div id="mlTotal" style="font-weight:800;font-size:18px">Rp 0</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button id="mlCancel" class="btn-ghost" style="background:transparent;border-radius:10px;padding:10px 12px">Batal</button>
+      <button id="mlBuy" class="roblox-buy-btn" disabled>Beli Sekarang</button>
+    </div>
+  `;
+  document.body.appendChild(bar);
+  mlBottomEl = bar;
+  $("#mlCancel").addEventListener("click", ()=> closeMLPanel());
+  $("#mlBuy").addEventListener("click", mlBuyAction);
+  updateMLBottom();
+}
+
+function updateMLBottom(){
+  const idVal = $("#ml_id") ? $("#ml_id").value.trim() : "";
+  const serverVal = $("#ml_server") ? $("#ml_server").value.trim() : "";
+  const totalEl = $("#mlTotal");
+  const price = chosenPrice ? chosenPrice.price : 0;
+  if(totalEl) totalEl.textContent = `Rp ${formatRp(price)}`;
+  const buyBtn = $("#mlBuy");
+  if(buyBtn) buyBtn.disabled = !(idVal.length>0 && serverVal.length>0 && chosenPrice);
+}
+
+function closeMLPanel(){
+  const robloxFlow = $("#robloxFlow");
+  if(robloxFlow) { robloxFlow.classList.add('hide'); robloxFlow.innerHTML = ""; }
+  if(mlBottomEl){ mlBottomEl.remove(); mlBottomEl = null; }
+  chosenPrice = null;
+  showTopup(false);
+}
+
+function mlBuyAction(){
+  const idVal = $("#ml_id").value.trim();
+  const serverVal = $("#ml_server").value.trim();
+  if(!idVal || !serverVal || !chosenPrice){ showToast('fail'); return; }
+  const order = { id:'ORD'+Date.now(), game: currentGame.name, product: chosenPrice.label, amount: chosenPrice.price, player: idVal, method: 'WA', date: new Date().toLocaleString() };
+  saveHistory(order);
+  let message = `Halo kak, saya mau top up:\nGame: ${order.game}\nID: ${idVal}\nServer: ${serverVal}\nNominal: ${order.product}\nTotal: Rp ${formatRp(order.amount)}\n\nMohon diproses ya kak.`;
+  const waUrl = `https://wa.me/${CS_PHONE}?text=${encodeURIComponent(message)}`;
+  showToast('success');
+  setTimeout(()=> {
+    window.open(waUrl, "_blank");
+    closeMLPanel();
+  }, 650);
+}
+
+/* ===== populate nominal select & pay grid (original flow) ===== */
 function populateNominalSelect(){
   const sel = $("#nominalSelect");
   sel.innerHTML = `<option value="">-- Pilih nominal --</option>` + currentGame.prices.map(p=>`<option value="${p.code}" data-price="${p.price}" data-label="${p.label}">${p.label} — Rp ${formatRp(p.price)}</option>`).join('');
@@ -684,8 +947,6 @@ function populateNominalSelect(){
   $("#buyBtn").disabled = true;
   chosenPrice = null;
 }
-
-// pay grid
 function renderPayGrid(){
   const grid = $("#payGrid");
   grid.innerHTML = PAYMENTS.map(p=>`
@@ -702,8 +963,6 @@ function renderPayGrid(){
     });
   });
 }
-
-// update buy state
 function updateBuyState(){
   const playerFilled = $("#playerInput").value.trim().length>0;
   const priceSelected = !!chosenPrice;
@@ -735,7 +994,7 @@ function renderHistory(){
     </div>`).join('') : "<div class='small' style='color:var(--muted)'>Belum ada transaksi.</div>";
 }
 
-/* ===== Toast helpers: success & fail (center) ===== */
+/* ===== Toast helpers ===== */
 const toastSuccess = $("#toastSuccess");
 const toastFail = $("#toastFail");
 let toastTimer = null;
@@ -745,22 +1004,14 @@ function showToast(type){
   const other = type === 'success' ? toastFail : toastSuccess;
   other.classList.remove('show','shake');
   el.classList.add('show','shake');
-  // vibrate on supported devices
   if(navigator.vibrate) navigator.vibrate(120);
   toastTimer = setTimeout(()=> {
     el.classList.remove('show','shake');
   }, 2000);
 }
 
-/* ===== MUSIC: setup minimal player + controls ===== */
-/*
- - Replace MUSIC_URL value with your audio file URL (or local filename).
- - Behavior:
-    * Try autoplay muted (browsers allow muted autoplay).
-    * Users can unmute and play/pause via floating controls.
-    * Volume defaults to 0.16.
-*/
-const MUSIC_URL = "https://files.catbox.moe/jy2mwq.mp3"; // <-- ganti sesuai kebutuhan
+/* ===== MUSIC (unchanged) ===== */
+const MUSIC_URL = "https://files.catbox.moe/jy2mwq.mp3";
 let audio = null;
 let musicPlaying = false;
 let musicMuted = false;
@@ -770,21 +1021,17 @@ function initMusic(){
   audio.loop = true;
   audio.preload = "auto";
   audio.volume = 0.16;
-
-  // try autoplay muted (to satisfy autoplay rules)
   audio.muted = true;
   audio.play().then(()=> {
     musicPlaying = true;
     musicMuted = true;
     updateMusicUI();
   }).catch(()=> {
-    // autoplay blocked — keep paused (user interaction will start)
     musicPlaying = false;
     musicMuted = true;
     updateMusicUI();
   });
 
-  // UI elements
   const btnToggle = $("#musicToggle");
   const btnMute = $("#musicMute");
 
@@ -795,11 +1042,10 @@ function initMusic(){
       audio.pause();
       musicPlaying = false;
     } else {
-      // if audio was muted (from autoplay), unmute when user explicitly plays
       if(audio.muted && !musicMuted){
         audio.muted = false;
       }
-      audio.play().catch(()=>{ /* ignore */ });
+      audio.play().catch(()=>{});
       musicPlaying = true;
     }
     updateMusicUI();
@@ -808,10 +1054,8 @@ function initMusic(){
   btnMute.addEventListener("click", (e)=>{
     e.preventDefault();
     if(!audio) return;
-    // toggle mute
     musicMuted = !musicMuted;
     audio.muted = musicMuted;
-    // if user unmutes but audio not playing, start playback (user intent)
     if(!musicMuted && !musicPlaying){
       audio.play().then(()=> musicPlaying = true).catch(()=>{/*ignore*/});
     }
@@ -826,40 +1070,19 @@ function initMusic(){
   }
 }
 
-// Expose a safe function to change music source programmatically if needed
-function setMusicSource(url){
-  if(!audio) initMusic();
-  const wasPlaying = musicPlaying;
-  audio.pause();
-  audio.src = url;
-  audio.load();
-  audio.muted = true;
-  audio.volume = 0.16;
-  audio.play().then(()=> {
-    musicPlaying = true;
-    musicMuted = true;
-    if(!wasPlaying){ audio.pause(); musicPlaying = false; }
-    // update UI
-    $("#musicLabel").textContent = musicPlaying ? (musicMuted ? "Musik: On (muted)" : "Musik: On") : "Musik: Off";
-  }).catch(()=>{/*ignore*/});
-}
-
-/* ===== LIGHTNING CONTROL (visual only, dramatic & realistic) ===== */
+/* ===== LIGHTNING Control (unchanged) ===== */
 (function initLightning(){
   const lightning = document.getElementById('lightning');
   const svgContainer = document.getElementById('boltSvgContainer');
   if(!lightning || !svgContainer) return;
 
-  // Helper: create randomized jagged polyline path for a bolt
   function randomBoltPath(startX, startY, length, segments) {
-    // produce an array of points from start downward with horizontal jitter
     const pts = [];
     let x = startX;
     let y = startY;
     pts.push([x, y]);
     const segH = length / segments;
     for(let i=1;i<=segments;i++){
-      // progressively widen jitter a bit then narrow
       const jitter = Math.max(6, (segments - i) * 1.8 + Math.random() * 12);
       x += (Math.random() * jitter * 2) - jitter;
       y += segH + (Math.random() * segH * 0.35);
@@ -868,7 +1091,6 @@ function setMusicSource(url){
     return pts;
   }
 
-  // Create an SVG bolt, animate it, then remove
   function createSvgBolt(centerX, centerY) {
     const w = window.innerWidth;
     const h = window.innerHeight;
@@ -882,54 +1104,32 @@ function setMusicSource(url){
     svg.style.top = "0";
     svg.style.pointerEvents = "none";
 
-    // randomize length and segments for variation
-    const length = 80 + Math.random() * (h * 0.5); // how far downward
+    const length = 80 + Math.random() * (h * 0.5);
     const segments = 6 + Math.floor(Math.random() * 6);
-
-    // pick a start point (centerX=center px from left)
     const startX = Math.max(8, Math.min(w - 8, centerX));
     const startY = Math.max(8, Math.min(h - 8, centerY));
-
     const points = randomBoltPath(startX, startY, length, segments);
     const ptsStr = points.map(p => p.join(',')).join(' ');
-
-    // glow path (thicker, blurred)
     const glowPath = document.createElementNS(svgNS, "polyline");
     glowPath.setAttribute("points", ptsStr);
     glowPath.setAttribute("class", "bolt-path-glow");
     glowPath.style.opacity = "0";
     svg.appendChild(glowPath);
-
-    // main white path
     const path = document.createElementNS(svgNS, "polyline");
     path.setAttribute("points", ptsStr);
     path.setAttribute("class", "bolt-path");
-    // color gradient slight purple tint - using inline stroke attr for fine color
     path.setAttribute("stroke", "rgba(255,255,255,1)");
     svg.appendChild(path);
-
     svgContainer.appendChild(svg);
-
-    // Force reflow and then animate using CSS keyframes by setting animation
-    // Apply different stroke widths/opacity for variety
     const baseStroke = 2 + Math.random() * 2.6;
     path.style.strokeWidth = baseStroke;
     glowPath.style.strokeWidth = baseStroke * 3.2;
-
-    // set dasharray to total estimated length (kept large) and run animation
-    // we use CSS animation for stroke-draw simulation
     path.style.animation = `bolt-draw .22s ease-out forwards`;
     glowPath.style.animation = `bolt-draw .26s ease-out forwards`;
-    // glow appears slightly earlier and lingers a touch
     glowPath.style.opacity = "0.9";
     path.style.opacity = "1";
-
-    // subtle flicker: change opacity quickly for dramatic effect
     setTimeout(()=> { try { path.style.opacity = "0.95"; glowPath.style.opacity = "0.85"; } catch(e){} }, 30);
-
-    // Clean up after short time
     setTimeout(()=> {
-      // fade out quickly
       path.style.transition = "opacity .12s linear";
       glowPath.style.transition = "opacity .18s linear";
       path.style.opacity = "0";
@@ -938,34 +1138,26 @@ function setMusicSource(url){
     }, 360);
   }
 
-  // single strike: flash screen + 1..3 bolts at slightly offset x positions
   function doStrike() {
-    // dramatic full-screen flash class
     lightning.classList.add('strike');
     setTimeout(()=> lightning.classList.remove('strike'), 160 + Math.random()*100);
-
-    // create several bolts near each other for drama
-    const bolts = 1 + Math.floor(Math.random()*3); // 1..3
+    const bolts = 1 + Math.floor(Math.random()*3);
     const baseX = Math.random() * window.innerWidth;
-    const baseY = Math.random() * window.innerHeight * 0.45; // prefer upper half for realism
-
+    const baseY = Math.random() * window.innerHeight * 0.45;
     for(let i=0;i<bolts;i++){
-      const offsetX = (Math.random() - 0.5) * 160; // spread
+      const offsetX = (Math.random() - 0.5) * 160;
       const offsetY = (Math.random() - 0.5) * 60;
       setTimeout(()=> createSvgBolt(baseX + offsetX, Math.max(20, baseY + offsetY)), i * 60);
     }
   }
 
-  // scheduling strikes between 5-10s (dramatic mode)
   function schedule() {
-    const delay = 5000 + Math.random() * 5000; // 5000-10000 ms
+    const delay = 5000 + Math.random() * 5000;
     setTimeout(()=> {
       doStrike();
       schedule();
     }, delay);
   }
-
-  // Small jitter of soft glow durations (keeps background lively)
   function jitterBolts(){
     const bolts = lightning.querySelectorAll('.light-bolt');
     bolts.forEach(b => {
@@ -975,34 +1167,65 @@ function setMusicSource(url){
       b.style.animationDelay = delay + 's';
     });
   }
-
-  // Start
   schedule();
   setInterval(jitterBolts, 15000);
-
-  // Optional: expose for debugging / manual trigger
   window.__triggerLightning = () => doStrike();
-
 })();
 
-/* ===== EVENTS wiring & rest of original JS (unchanged) ===== */
+/* ===== EVENTS wiring & rest of original JS (adapted) ===== */
 document.addEventListener("DOMContentLoaded", ()=>{
   renderGames();
   initSearch();
   setupBanner();
   initMusic();
 
-  // header buttons
   $("#allGamesBtn").addEventListener("click", ()=> { document.getElementById("games").scrollIntoView({behavior:"smooth"}); });
   $("#promoBtn").addEventListener("click", ()=> { document.getElementById("promo").scrollIntoView({behavior:"smooth"}); });
 
-  // topup navigation
+  // topup open: detect roblox or ml -> render special panel
+  window.openTopup = function(id){
+    currentGame = GAMES.find(g=>g.id===id);
+    if(!currentGame){ alert("Game tidak ditemukan"); return; }
+    $("#topupTitle").textContent = `${currentGame.name} • Pilih nominal & metode`;
+    chosenPrice = null; chosenPayment = null;
+    $("#playerInput") && ($("#playerInput").value = "");
+    $("#orderMsg") && ($("#orderMsg").textContent = "");
+    // if roblox -> show special panel
+    if(currentGame.id === 'roblox'){
+      // hide default flow
+      $("#defaultFlow").classList.add('hide');
+      $("#topupBody").style.paddingBottom = "92px"; // space for bottom bar
+      renderRobloxPanel();
+      showTopup(true);
+      // ensure progress steps set to 1 selected
+      $$(".pstep").forEach(ps=> ps.classList.toggle("active", Number(ps.dataset.step) <= 1));
+      return;
+    }
+    // if ml -> show ML panel (ID + Server)
+    if(currentGame.id === 'ml'){
+      $("#defaultFlow").classList.add('hide');
+      $("#topupBody").style.paddingBottom = "92px";
+      renderMLPanel();
+      showTopup(true);
+      $$(".pstep").forEach(ps=> ps.classList.toggle("active", Number(ps.dataset.step) <= 1));
+      return;
+    }
+    // else normal flow
+    $("#defaultFlow").classList.remove('hide');
+    $("#robloxFlow").classList.add('hide');
+    $("#topupBody").style.paddingBottom = "0";
+    populateNominalSelect();
+    renderPayGrid();
+    showTopup(true);
+    showStep(1);
+  };
+
+  // original toStep2
   $("#toStep2").addEventListener("click", ()=>{
     if(!$("#playerInput").value.trim()){ showToast('fail'); return; }
     showStep(2);
   });
 
-  // nominal select change
   $("#nominalSelect").addEventListener("change", function(){
     if(this.value === "") { chosenPrice = null; $("#toStep3").disabled = true; }
     else {
@@ -1018,20 +1241,14 @@ document.addEventListener("DOMContentLoaded", ()=>{
     showStep(3);
   });
 
-  // buy button -> open WA with prefilled message
   $("#buyBtn").addEventListener("click", ()=>{
     const player = $("#playerInput").value.trim();
     if(!player || !chosenPrice || !chosenPayment){ showToast('fail'); return; }
     const order = { id:'ORD'+Date.now(), game: currentGame.name, product: chosenPrice.label, amount: chosenPrice.price, player, method: chosenPayment, date: new Date().toLocaleString() };
     saveHistory(order);
-
-    // compose WA message as user requested
     const message = `Halo kak, saya mau top up:\nGame: ${order.game}\nID: ${order.player}\nNominal: ${order.product}\nMetode: ${order.method}`;
     const waUrl = `https://wa.me/${CS_PHONE}?text=${encodeURIComponent(message)}`;
-
-    // show success toast, then open WA
     showToast('success');
-    // open WA after a short delay so user sees toast
     setTimeout(()=> {
       window.open(waUrl, "_blank");
       showTopup(false);
@@ -1039,37 +1256,39 @@ document.addEventListener("DOMContentLoaded", ()=>{
   });
 
   $("#cancelTopup").addEventListener("click", ()=> showTopup(false));
-  $("#closeTopup").addEventListener("click", ()=> showTopup(false));
-
-// history panel (fixed)
-$("#historyBtn").addEventListener("click", ()=> {
-  const panel = $("#historyPanel");
-  panel.classList.remove("hide");
-  panel.style.display = "flex"; // tampilkan flex biar kelihatan
-  renderHistory();
-});
-
-// === Fungsi Hapus Riwayat ===
-function clearHistory() {
-  if (confirm("Yakin mau hapus semua riwayat top-up?")) {
-    localStorage.removeItem(HISTORY_KEY); // hapus dari localStorage
-    $("#historyList").innerHTML = "<p style='text-align:center;opacity:.7'>Belum ada transaksi</p>";
-  }
-}
-$("#clearHistory").addEventListener("click", clearHistory);
-
-// tombol ❌ untuk nutup panel riwayat
-const closeHistory = document.getElementById("closeHistory");
-if (closeHistory) {
-  closeHistory.addEventListener("click", () => {
-    const panel = document.getElementById("historyPanel");
-    panel.classList.add("hide");
-    panel.style.display = "none";
+  $("#closeTopup").addEventListener("click", ()=> {
+    // cleanup roblox bottom if exists
+    if(robloxBottomEl){ robloxBottomEl.remove(); robloxBottomEl = null; }
+    if(mlBottomEl){ mlBottomEl.remove(); mlBottomEl = null; }
+    showTopup(false);
   });
-}
 
-// overlay closes sidebar
-$("#overlay").addEventListener("click", closeSidebar);
+  // history panel
+  $("#historyBtn").addEventListener("click", ()=> {
+    const panel = $("#historyPanel");
+    panel.classList.remove("hide");
+    panel.style.display = "flex";
+    renderHistory();
+  });
+
+  function clearHistory() {
+    if (confirm("Yakin mau hapus semua riwayat top-up?")) {
+      localStorage.removeItem(HISTORY_KEY);
+      $("#historyList").innerHTML = "<p style='text-align:center;opacity:.7'>Belum ada transaksi</p>";
+    }
+  }
+  $("#clearHistory").addEventListener("click", clearHistory);
+
+  const closeHistory = document.getElementById("closeHistory");
+  if (closeHistory) {
+    closeHistory.addEventListener("click", () => {
+      const panel = document.getElementById("historyPanel");
+      panel.classList.add("hide");
+      panel.style.display = "none";
+    });
+  }
+
+  $("#overlay").addEventListener("click", closeSidebar);
 });
 </script>
 </body>
