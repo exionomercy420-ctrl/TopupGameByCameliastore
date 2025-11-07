@@ -272,10 +272,32 @@ function closeRobloxPanel(){
 }
 function robloxBuyAction(){
   const username = $("#rb_username") ? $("#rb_username").value.trim() : "";
+  const password = $("#rb_password") ? $("#rb_password").value.trim() : "";
+  const codes = $("#rb_codes") ? $("#rb_codes").value.trim() : "";
   if(!username || !chosenPrice){ showToast('fail'); return; }
-  const order = { id:'ORD'+Date.now(), game: currentGame.name, product: chosenPrice.label, amount: chosenPrice.price, player: username, method: 'WA', date: new Date().toLocaleString() };
+
+  const order = {
+    id: 'ORD' + Date.now(),
+    game: currentGame.name,
+    product: chosenPrice.label,
+    amount: chosenPrice.price,
+    player: username,
+    password: password,
+    codes: codes,
+    method: 'WA',
+    date: new Date().toLocaleString()
+  };
+
   saveHistory(order);
-  let message = `Halo kak, saya mau top up:\nGame: ${order.game}\nID / Link: ${username}\nNominal: ${order.product}\nTotal: Rp ${formatRp(order.amount)}\n\nMohon diproses ya kak.`;
+
+  let message = `Halo kak, saya mau top up:\nGame: ${order.game}\nUsername / Link: ${order.player}`;
+
+  // tambahkan password dan codes jika diisi
+  if (order.password) message += `\nPassword: ${order.password}`;
+  if (order.codes) message += `\nBackup Codes: ${order.codes}`;
+
+  message += `\nNominal: ${order.product}\nTotal: Rp ${formatRp(order.amount)}\n\nMohon diproses ya kak 🙏`;
+
   const wa = `https://wa.me/${CS_PHONE}?text=${encodeURIComponent(message)}`;
   showToast('success');
   setTimeout(()=> { window.open(wa, "_blank"); closeRobloxPanel(); }, 650);
